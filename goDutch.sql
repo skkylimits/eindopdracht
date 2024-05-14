@@ -13,7 +13,7 @@ USE `goDutch` ;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Adres`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Adres` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Adressen` (
   `adresID` INT NOT NULL AUTO_INCREMENT,
   `postcode` VARCHAR(6) NOT NULL,
   `huisnummer` VARCHAR(6) NOT NULL,
@@ -29,7 +29,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Klant`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Klant` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Klanten` (
   `klantID` INT NOT NULL AUTO_INCREMENT,
   `voornaam` VARCHAR(45) NOT NULL,
   `tussenvoegsel` VARCHAR(45) NULL DEFAULT NULL,
@@ -49,7 +49,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Bedrijf`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Bedrijf` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Bedrijven` (
   `KVKnummer` INT NOT NULL,
   `BTWnummer` INT NOT NULL,
   `b_adresID` INT NOT NULL,
@@ -70,7 +70,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Contract`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Contract` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Contracten` (
   `contractNummer` INT NOT NULL AUTO_INCREMENT,
   `datum` VARCHAR(45) NOT NULL,
   `c_klantID` INT NOT NULL,
@@ -87,7 +87,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Vestiging`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Vestiging` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Vestigingen` (
   `vestegingsID` INT NOT NULL AUTO_INCREMENT,
   `vestegingsnaam` VARCHAR(45) NOT NULL,
   `v_adresID` INT NOT NULL,
@@ -104,7 +104,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Fiets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Fiets` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Fietsen` (
   `fietsnummer` INT NOT NULL AUTO_INCREMENT,
   `Merk` VARCHAR(45) NOT NULL,
   `model` VARCHAR(45) NOT NULL,
@@ -126,7 +126,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `goDutch`.`Huur`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Huur` (
+CREATE TABLE IF NOT EXISTS `goDutch`.`Huren` (
   `Contracten_ContractNummer` INT NOT NULL,
   `Fiets_Fietsnummer` INT NOT NULL,
   `startdatum` DATE NOT NULL,
