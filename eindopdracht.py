@@ -273,26 +273,20 @@ def toevoegen_contract(klantnummer, vestigingsnaam):
     print("Contract toegevoegd aan de database met ID van de laatst toegevoegde contract:", mycursor.lastrowid)
 
 def toon_contract(contractnummer):
-    ##############################
-    # toon contract uit de lijst #
-    ##############################
-    art = '''
-                ____
-                /  __\\
-                (  @ @ )
-                \\  O /
-                \\__/
-    '''
+    ###############################
+    # Voeg fiets toe aan de lijst #
+    ###############################
 
-    # Print the stored art
-    print(art)
-
-    width_langste_woord = 30
+    print("{:^100}".format("____"))
+    print("{:^100}".format("/  __\\"))
+    print("{:^100}".format("(  @ @ )"))
+    print("{:^100}".format("\\  O /"))
+    print("{:^100}".format("\\__/"))
     text1 = "-"
     print(text1 * 100)
     print("{:<25} {:<35} {:<15} {:<25}".format("Contractnr: NUMMER", "Datum: 14-05-2024", "Vestiging", "WTC"))
     print("{:<25} {:<35} {:<15} {:<25}".format("", "", "", "Strawinskylaan"))
-    print("{:<7} {:<69} {:<25}".format("Klant:", "Achternaam, Voornaam", "POSTCODE PLAATS"))
+    print("{:<7} {:<69} {:<25}".format("Klant:", "Achternaam, Voornaamssssssssss09ss0sioosajfoi oisdjfoisjfoijds", "POSTCODE PLAATS"))
     print("{:<7} {:<10} {:<51}".format("Adres:", "ADRES", ""))
     print("{:<7} {:<10} {:<51}".format("", "POSTCODE PLAATS", ""))
     print()
