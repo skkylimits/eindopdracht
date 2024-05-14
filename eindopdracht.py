@@ -186,6 +186,46 @@ def zoeken_klant():
     except mysql.connector.Error as error:
         print("Fout bij het verbinden met MySQL:", error)
             
+def toevoegen_fiets():
+    ###############################
+    # Voeg fiets toe aan de lijst #
+    ###############################
+    fietsnummer = genereer_fietsnummer()
+    merk = input("Voer merk in: ")
+    model = input("Voer model in: ")
+    fietstype = input("Voer de fietstype in: ")
+    elektrisch = input("Is de fiets elektrisch? True/False: ")
+    dagprijs = input("Voer de dagprijs in: ")
+    aankoopdatum = input("Voer de aankoopdatum in: ")
+    nieuwe_fiets = [int(fietsnummer), merk, model, fietstype, elektrisch, dagprijs, aankoopdatum]
+    fietsen.append(nieuwe_fiets)
+    toon_alle(fietsen)
+
+    ############################
+    # Voeg fiets toe aan de db #
+    ############################
+
+    # Definieer de SQL-query's met behulp van f-strings
+    insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, Merk, Model, Fietstype, Electrisch, Dagprijs, Aankoopdatum) VALUES ('{fietsnummer}', '{merk}', '{model}', '{fietstype}', '{elektrisch}', '{dagprijs}', '{aankoopdatum}')"
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    try:
+        # Voer de eerste query uit om de klantgegevens in te voegen
+        mycursor.execute(insert_fiets_query)
+
+        # Voer de tweede query uit om de adresgegevens in te voegen
+
+        # Bevestig de transactie om de wijzigingen in de database permanent te maken
+        mydb.commit()
+
+        print(f"Nieuwe fiets met fietsnummer: {fietsnummer} succesvol toegevoegd aan de database!")
+    except Exception as e:
+        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
+        print("Er is een fout opgetreden bij het toevoegen van de fiets:", e)
+        mydb.rollback()
+
 def toevoegen_contract(klantnummer, vestigingsnaam):
     ##################################
     # Voeg contract toe aan de lijst #
@@ -385,7 +425,7 @@ def main():
         elif choice == "4":
             zoeken_klant()
         elif choice == "5":
-            print('5')
+            toevoegen_fiets()
         elif choice == "6":
             klantnummer = input("Voer uw klantnummer in.. ")
             vestigingsnaam = input("Voer uw vestigingsnaam in.. ")
