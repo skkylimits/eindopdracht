@@ -32,11 +32,11 @@ locaties = [
 ]
 
 contracten = [
-    ["Contractnummer", "Vestigingsnaam", "Klantnummer", "Startdatum", "Inleverdatum"],
-    [301, "Amsterdam Centraal", 1, "2022-03-01", "2022-03-10"],
-    [302, "Rotterdam Zuid", 2, "2022-02-20", "2022-03-05"],
-    [303, "Den Haag Centrum", 3, "2022-01-15", "2022-01-25"],
-    [303, "Utrecht Centrum", 1, "2022-03-25", "2022-09-23"]
+    ["Contractnummer", "Klantnummer", "Vestigingsnaam", "Startdatum", "Inleverdatum"],
+    [301, 1, "Amsterdam Centraal", "2022-03-01", "2022-03-10"],
+    [302, 2, "Rotterdam Zuid", "2022-02-20", "2022-03-05"],
+    [303, 3, "Den Haag Centrum", "2022-01-15", "2022-01-25"],
+    [303, 4, "Utrecht Centrum", "2022-03-25", "2022-09-23"]
 ]
 
 # Functies
@@ -82,7 +82,6 @@ def toevoegen_klant():
 
     # Definieer de SQL-query's met behulp van f-strings
     insert_klant_query = f"INSERT INTO Klanten (idKlanten, Voornaam, Tussenvoegsel, Achternaam) VALUES ('{klantnummer}', '{voornaam}', '{tussenvoegsel}', '{achternaam}')"
-    insert_adres_query = f"INSERT INTO Adres (idAdres, Postcode, Huisnummer, Straat, Plaats, Categorie) VALUES ('{klantnummer}', '{postcode}', '{huisnummer}', '{straat}', '{woonplaats}', '{categorie}')"
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
@@ -92,7 +91,6 @@ def toevoegen_klant():
         mycursor.execute(insert_klant_query)
 
         # Voer de tweede query uit om de adresgegevens in te voegen
-        mycursor.execute(insert_adres_query)
 
         # Bevestig de transactie om de wijzigingen in de database permanent te maken
         mydb.commit()
@@ -189,17 +187,49 @@ def zoeken_klant():
         print("Fout bij het verbinden met MySQL:", error)
             
 def toevoegen_contract(klantnummer, vestigingsnaam):
+    ##################################
+    # Voeg contract toe aan de lijst #
+    ##################################
+
     print("Contract Opstellen")
     contractnummer = genereer_contractnummer()
-    vestigingsnaam = vestigingsnaam
     klantnummer = klantnummer
-    startdatum = input("Voer uw adres in.. ")
-    inleverdatum = input("Voer uw postcode in.. ")
-    nieuw_contract = [int(contractnummer), vestigingsnaam, klantnummer, startdatum, inleverdatum]
+    vestigingsnaam = vestigingsnaam
+    startdatum = input("Voer de startdatum in.. ")
+    inleverdatum = input("Voer de inleverdatum in.. ")
+    nieuw_contract = [int(contractnummer), klantnummer, vestigingsnaam, startdatum, inleverdatum]
 
     print("nieuwe contract succesvol toegevoegd!")
     contracten.append(nieuw_contract)
     toon_alle(contracten)
+
+    ###############################
+    # Voeg contract toe aan de db #
+    ###############################
+
+    # Definieer de SQL-query's met behulp van f-strings
+    insert_contract_query = f"INSERT INTO Contracten (idKlanten, Vestiginsnaam, Startdatum, Inleverdatum) VALUES ('{klantnummer}', '{vestigingsnaam}', '{startdatum}', '{inleverdatum}')"
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    try:
+        # Voer de eerste query uit om de klantgegevens in te voegen
+        mycursor.execute(insert_contract_query)
+
+        # Voer de tweede query uit om de adresgegevens in te voegen
+
+        # Bevestig de transactie om de wijzigingen in de database permanent te maken
+        mydb.commit()
+
+        print(f"Nieuwe contract met contractummer: {contractnummer} succesvol toegevoegd aan de database!")
+    except Exception as e:
+        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
+        print("Er is een fout opgetreden bij het toevoegen van de contract:", e)
+        mydb.rollback()
+
+    # Als je wilt controleren of de klant correct is toegevoegd, kun je bijvoorbeeld de ID van de laatst toegevoegde rij afdrukken
+    print("Contract toegevoegd aan de database met ID van de laatst toegevoegde contract:", mycursor.lastrowid)
 
 def toon_contract(contractnummer):
     print('toon contract')
