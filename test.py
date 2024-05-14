@@ -230,7 +230,6 @@ def zoeken_klant():
     ##########################
     # Zoek klant in de lijst #
     ##########################
-    
     # Vraag de gebruiker om een deel van de achternaam om te zoeken
     deel_achternaam = input("Voer een deel van de achternaam in om te zoeken: ")
 
@@ -242,31 +241,34 @@ def zoeken_klant():
             print(klant)
             # Exit the loop after finding the first match
             break
+
     #############################
     # Zoek klant in de database #
     #############################
-
-    # Definieer de SQL-query's met behulp van f-strings
-    # Maak een cursor object om SQL-query's uit te voeren
+    try:
+        # Maak een cursor object om SQL-query's uit te voeren
         mycursor = mydb.cursor()
-        
+            
         # Definieer de SQL-query met behulp van een f-string
         query = f"SELECT * FROM klanten WHERE achternaam LIKE '%{deel_achternaam}%'"
-
+            
         # Voer de query uit
         mycursor.execute(query)
-        
+            
         # Haal alle overeenkomende records op
-        klanten = mycursor.fetchall()
-        
-        if klanten:
-            for klant in klanten:
-                print("Klant ID:", klant[0])
-                print("Naam:", klant[1])
-                print("Email:", klant[2])
+        klanten_db = mycursor.fetchall()
+            
+        if klanten_db:
+            for klant_db in klanten_db:
+                print("Klant ID:", klant_db[0])
+                print("Naam:", klant_db[1])
+                print("Achternaam:", klant_db[3])
                 # Je kunt andere klantgegevens afdrukken zoals nodig
         else:
-            print(f"Geen klant gevonden met de naam", {deel_achternaam})
+            print(f"Geen klant gevonden met de naam {deel_achternaam}")
+    
+    except mysql.connector.Error as error:
+        print("Fout bij het verbinden met MySQL:", error)
             
 # Utility
 def toon_alle(data):
@@ -314,6 +316,8 @@ def main():
         choice = input("Enter your choice (1-9): ")
 
         if choice == "9":
+            if mydb.is_connected():
+                mydb.close()
             print("Programma beëindigen. Tot de volgende keer!")
             break
         elif choice == "1":
