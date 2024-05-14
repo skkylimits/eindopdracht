@@ -8,7 +8,7 @@ mydb = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
     password="Inloggen01",
-    database="mydb"
+    database="goDutch"
 )
 
 # Data
@@ -28,7 +28,7 @@ fietsen = [
 
 locaties = [
     ["locatienummer", "Vestigingsnaam", "Adres", "Postcode", "Plaats"],
-    [201, "Amsterdam Centraal", "Stationsplein 9", "1012 AB", "Amsterdam"],
+    [201, "WTC", "Stationsplein 9", "1012 AB", "Amsterdam"],
     [202, "Rotterdam Zuid", "Laan op Zuid 393", "3071 AA", "Rotterdam"],
     [203, "Den Haag Centrum", "Spui 68", "2511 BT", "Den Haag"]
 ]
@@ -307,11 +307,17 @@ def toon_contract(contractnummer):
     for locatie in locaties[1:]:
         if locatie[1] == locatie_naam:
             locatie_informatie = locatie
-            print(locatie_informatie[2])
+            print(locatie_informatie)
             break
     
-    vestigingnaam = locatie_informatie[2]
+    
+    if klant_informatie and len(klant_informatie) >= 3:  # Controleer of klant_informatie bestaat en voldoende elementen heeft
+        klant_naam = klant_informatie[2]
+        print(klant_naam)
+    else:
+        klant_naam = "Onbekend"  # Als de informatie ontbreekt, gebruik een standaardwaarde
 
+    print(klant_naam)
     print("{:^100}".format("____"))
     print("{:^100}".format("/  __\\"))
     print("{:^100}".format("(  @ @ )"))
@@ -319,9 +325,10 @@ def toon_contract(contractnummer):
     print("{:^100}".format("\\__/"))
     text1 = "-"
     print(text1 * 100)
-    print("{:<25} {:<35} {:<15} {:<25}".format(f"Contractnr: {contractnummer}", f"Datum: {date_today_str}", "Vestiging", "{locatie_informatie[2]}"))    
-    print("{:<25} {:<35} {:<15} {:<25}".format("", "", "", "Strawinskylaan"))
-    print("{:<7} {:<69} {:<25}".format("Klant:", "Achternaam", "POSTCODE PLAATS"))
+    print("{:<25} {:<35} {:<15} {:<25}".format(f"Contractnr: {contractnummer}", f"Datum: {date_today_str}", "Vestiging", locatie_informatie[2]))
+    print("{:<25} {:<35} {:<15} {:<25}".format(f"", "", "", locatie_informatie[3] + ' ' + locatie_informatie[4]))
+
+    print("{:<7} {:<69} {:<25}".format("Klant:", klant_naam, ""))
     print("{:<7} {:<10} {:<51}".format("Adres:", "ADRES", ""))
     print("{:<7} {:<10} {:<51}".format("", "POSTCODE PLAATS", ""))
     print()
