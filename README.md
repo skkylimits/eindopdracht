@@ -1,5 +1,7 @@
 # eindopdracht
 
-add cursor close where needed
+- [ ] Add cursor close where needed
 
-fix functies 2, 5, 7
+- [ ] fix functie 2
+
+- [ ] fix functie 7
