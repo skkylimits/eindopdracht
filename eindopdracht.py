@@ -1,5 +1,6 @@
 import json
 import mysql.connector
+from datetime import datetime
 from tabulate import tabulate
 
 # Replace the values with your actual database connection details
@@ -276,6 +277,40 @@ def toon_contract(contractnummer):
     ###############################
     # Voeg fiets toe aan de lijst #
     ###############################
+    date_today =  datetime.today()
+    date_today_str = date_today.strftime('%d-%m-%Y')
+
+
+    # Search for the sublist with contract number 303
+    contract_info = None
+    for contract in contracten[1:]:
+        if contract[0] == contractnummer:
+            contract_info = contract
+            print(contract_info)
+            break
+
+    if contract_info:
+        # Haal klantnummer en locatienaam op uit de contractinformatie
+        klantnummer = contract_info[1]
+        locatie_naam = contract_info[2]
+
+    # Zoek klantinformatie
+    klant_informatie = None
+    for klant in klanten[1:]:
+        if klant[0] == klantnummer:
+            klant_informatie = klant
+            print(klant_informatie)
+            break
+
+    # Zoek locatieinformatie
+    locatie_informatie = None
+    for locatie in locaties[1:]:
+        if locatie[1] == locatie_naam:
+            locatie_informatie = locatie
+            print(locatie_informatie[2])
+            break
+    
+    vestigingnaam = locatie_informatie[2]
 
     print("{:^100}".format("____"))
     print("{:^100}".format("/  __\\"))
@@ -284,9 +319,9 @@ def toon_contract(contractnummer):
     print("{:^100}".format("\\__/"))
     text1 = "-"
     print(text1 * 100)
-    print("{:<25} {:<35} {:<15} {:<25}".format("Contractnr: NUMMER", "Datum: 14-05-2024", "Vestiging", "WTC"))
+    print("{:<25} {:<35} {:<15} {:<25}".format(f"Contractnr: {contractnummer}", f"Datum: {date_today_str}", "Vestiging", "{locatie_informatie[2]}"))    
     print("{:<25} {:<35} {:<15} {:<25}".format("", "", "", "Strawinskylaan"))
-    print("{:<7} {:<69} {:<25}".format("Klant:", "Achternaam, Voornaamssssssssss09ss0sioosajfoi oisdjfoisjfoijds", "POSTCODE PLAATS"))
+    print("{:<7} {:<69} {:<25}".format("Klant:", "Achternaam", "POSTCODE PLAATS"))
     print("{:<7} {:<10} {:<51}".format("Adres:", "ADRES", ""))
     print("{:<7} {:<10} {:<51}".format("", "POSTCODE PLAATS", ""))
     print()

@@ -51,7 +51,7 @@ berekening met de gegevens in de database.
 - [ ] Een Python script
 - [x] Een ERD
 - [ ] Een Relationeel Model
-- [ ] Een SQL script om de database te creëren
+- [x] Een SQL script om de database te creëren
 
 ## Checklist
 
