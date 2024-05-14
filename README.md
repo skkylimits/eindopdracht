@@ -55,12 +55,12 @@ berekening met de gegevens in de database.
 
 ## Checklist
 
-- [ ] Maak een ERD in Lucidchart.
+- [x] Maak een ERD in Lucidchart.
 - [ ] Maak van het ERD een Relationeel Model in MySQL Workbench.
-- [ ] Maak van het Relationeel Model een fysieke database met de optie Forward Engineering.
+- [x] Maak van het Relationeel Model een fysieke database met de optie Forward Engineering.
 - [ ] Vul de database met de gegevens uit het voorbeeldcontract.
 - [ ] Schrijf een Python programma met daarin het gevraagde menu en functies.
-- [ ] Met de functie zoeken_klant() kan op een deel van de achternaam worden gezocht.
+- [x] Met de functie zoeken_klant() kan op een deel van de achternaam worden gezocht.
 - [ ] De functie toon_alle_gegevens( ) toont de gegevens van alle klanten, fietsen en contracten
       gesorteerd en overzichtelijk met behulp van string formatting. Voor ieder contract dient de
       totaalprijs te worden getoond. De klanten dienen gesorteerd te worden getoond op
