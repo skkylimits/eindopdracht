@@ -106,6 +106,9 @@ def toevoegen_klant():
     # Als je wilt controleren of de klant correct is toegevoegd, kun je bijvoorbeeld de ID van de laatst toegevoegde rij afdrukken
     print("Klant toegevoegd aan de database met ID van de laatst toegevoegde klant:", mycursor.lastrowid)
 
+def wijzigen_klant():
+    print('wijzigen klant')
+
 def verwijderen_klant(klantnummer):
     ################################
     # Verwijder klant uit de lijst #
@@ -345,7 +348,7 @@ def main():
         elif choice == "1":
             toevoegen_klant()
         elif choice == "2":
-            toon_alle(klanten)
+            wijzigen_klant()
         elif choice == "3":
             klantnummer = int(input("Voer het klantnummer in dat moet worden verwijderd: "))
             verwijderen_klant(klantnummer)
