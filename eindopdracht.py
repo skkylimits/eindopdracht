@@ -57,42 +57,59 @@ def toon_menu():
     print("+------------------------------------+")
 
 def toevoegen_klant():
+    # Vraag om input van de gebruiker
     klantnummer = genereer_klantnummer()
-    voornaam = input("Voer voornaam in.. ")
-    achternaam = input("Voer uw achternaam in.. ")
-    tussenvoegsel = input("Voer uw tussenvoegsel in.. ")
-    adres = input("Voer uw adres in.. ")
-    postcode = input("Voer uw postcode in.. ")
-    Woonplaats = input("Voer uw woonplaats in.. ")
-    bankrekeningnummer = input("Voer bankrekeningnummer in.. ")
-    nieuwe_klant = [int(klantnummer), voornaam, achternaam, adres, postcode, Woonplaats, bankrekeningnummer]
+    voornaam = input("Voer voornaam in: ")
+    tussenvoegsel = input("Voer tussenvoegsel in: ")
+    achternaam = input("Voer uw achternaam in: ")
+    straat = input("Voer uw adres in: ")
+    huisnummer = input("Voer uw huisnummer in: ")
+    postcode = input("Voer uw postcode in: ")
+    woonplaats = input("Voer uw woonplaats in: ")
+    categorie = input("Voer uw categorie in: ")
+    bankrekeningnummer = input("Voer bankrekeningnummer in: ")
+    nieuwe_klant = [int(klantnummer), voornaam, achternaam, straat, postcode, woonplaats, bankrekeningnummer]
 
-    # Voeg klant toe aan lijst
-    print("nieuwe klant succesvol toegevoegd aan lijst!")
+    ###############################
+    # Voeg klant toe aan de lijst #
+    ###############################
     klanten.append(nieuwe_klant)
+    print(f"Nieuwe klant met {klantnummer} succesvol toegevoegd aan lijst!")
 
-    # Voeg klant toe aan db
-    # Define the SQL query to insert a new customer into the "Klanten" table
-    query2 = "INSERT INTO Klanten (idKlanten, Voornaam, Tussenvoegsel, Achternaam) VALUES ('1','1', '1', '1'); INSERT INTO Adres (idAdres, postcode, Huisnummer, straat, plaats, categorie) VALUES (1, '1012 AB', 9, 'Stationsplein', 'Amsterdam', 'Vestiging')"
-    query = print(f"INSERT INTO Klanten (idKlanten, Voornaam, Tussenvoegsel, Achternaam) VALUES ('{klantnummer}','{voornaam}', '{tussenvoegsel}', '{achternaam})'")
-    query3 = "INSERT INTO Klanten (idKlanten, Voornaam, Tussenvoegsel, Achternaam) VALUES ('111', '111', '111', '111');"
-    
-    # Create a cursor object to execute SQL queries
+    ############################
+    # Voeg klant toe aan de db #
+    ############################
+
+    # Definieer de SQL-query's met behulp van f-strings
+    insert_klant_query = f"INSERT INTO Klanten (idKlanten, Voornaam, Tussenvoegsel, Achternaam) VALUES ('{klantnummer}', '{voornaam}', '{tussenvoegsel}', '{achternaam}')"
+    insert_adres_query = f"INSERT INTO Adres (idAdres, Postcode, Huisnummer, Straat, Plaats, Categorie) VALUES ('{klantnummer}', '{postcode}', '{huisnummer}', '{straat}', '{woonplaats}', '{categorie}')"
+
+    # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
-    # Execute the SQL query with the customer data
-    mycursor.execute(query3)
+    try:
+        # Voer de eerste query uit om de klantgegevens in te voegen
+        mycursor.execute(insert_klant_query)
 
-    # Commit the transaction to make the changes persistent in the database
-    mydb.commit()
+        # Voer de tweede query uit om de adresgegevens in te voegen
+        mycursor.execute(insert_adres_query)
 
-    # Print a message to indicate the successful insertion
-    print("Nieuwe klant succesvol toegevoegd aan db!")
+        # Bevestig de transactie om de wijzigingen in de database permanent te maken
+        mydb.commit()
 
-def wijzigen_klant(klantnummer):
-    print("Klant Wijzigen")
+        print("Nieuwe klant succesvol toegevoegd aan de database!")
+    except Exception as e:
+        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
+        print("Er is een fout opgetreden bij het toevoegen van de klant:", e)
+        mydb.rollback()
+
+    # Als je wilt controleren of de klant correct is toegevoegd, kun je bijvoorbeeld de ID van de laatst toegevoegde rij afdrukken
+    print("Klant toegevoegd aan de database met ID van de laatst toegevoegde klant:", mycursor.lastrowid)
 
 def verwijderen_klant(klantnummer):
+    ################################
+    # Verwijder klant uit de lijst #
+    ################################
     for klant in klanten:
         for item in klant:
             if klantnummer == item:
@@ -101,7 +118,33 @@ def verwijderen_klant(klantnummer):
                 klanten.pop(index)
                 print(f'klant succesvol verwijderd met klantnummer {klantnummer}')
 
+    #############################
+    # Verwijder klant uit de db #
+    #############################
+
+    # Maak een SQL-query om de klant te verwijderen
+    delete_query = f"DELETE FROM Klanten WHERE idKlanten = '{klantnummer}'"
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    try:
+        # Voer de DELETE-query uit om de klant te verwijderen
+        mycursor.execute(delete_query)
+
+        # Bevestig de transactie om de wijzigingen in de database permanent te maken
+        mydb.commit()
+
+        print(f"Klant met klantnummer {klantnummer} succesvol verwijderd uit de database!")
+    except Exception as e:
+        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
+        print("Er is een fout opgetreden bij het verwijderen van de klant:", e)
+        mydb.rollback()
+
 def zoeken_klant():
+    ##########################
+    # Zoek klant in de lijst #
+    ##########################
     # Vraag de gebruiker om een deel van de achternaam om te zoeken
     deel_achternaam = input("Voer een deel van de achternaam in om te zoeken: ")
 
@@ -114,19 +157,34 @@ def zoeken_klant():
             # Exit the loop after finding the first match
             break
 
-def toevoegen_fiets():
-    fietsnummer = genereer_fietsnummer()
-    merk = input("Voer merk in.. ")
-    model = input("Voer uw model in.. ")
-    fietstype = input("Voer uw fietstype in.. ")
-    elektrisch = input("Is het een elektrische fiets?.. ")
-    dagprijs = input("Voer de dagprijs in.. ")
-    aankoopdatum = input("Voer aankoopdatum in.. ")
-    nieuwe_fiets = [int(fietsnummer), merk, model, fietstype, bool(elektrisch), dagprijs, aankoopdatum]
-
-    print("nieuwe fiets succesvol toegevoegd!")
-    fietsen.append(nieuwe_fiets)
-
+    #############################
+    # Zoek klant in de database #
+    #############################
+    try:
+        # Maak een cursor object om SQL-query's uit te voeren
+        mycursor = mydb.cursor()
+            
+        # Definieer de SQL-query met behulp van een f-string
+        query = f"SELECT * FROM klanten WHERE achternaam LIKE '%{deel_achternaam}%'"
+            
+        # Voer de query uit
+        mycursor.execute(query)
+            
+        # Haal alle overeenkomende records op
+        klanten_db = mycursor.fetchall()
+            
+        if klanten_db:
+            for klant_db in klanten_db:
+                print("Klant ID:", klant_db[0])
+                print("Naam:", klant_db[1])
+                print("Achternaam:", klant_db[3])
+                # Je kunt andere klantgegevens afdrukken zoals nodig
+        else:
+            print(f"Geen klant gevonden met de naam {deel_achternaam}")
+    
+    except mysql.connector.Error as error:
+        print("Fout bij het verbinden met MySQL:", error)
+            
 def toevoegen_contract(klantnummer, vestigingsnaam):
     print("Contract Opstellen")
     contractnummer = genereer_contractnummer()
@@ -141,10 +199,12 @@ def toevoegen_contract(klantnummer, vestigingsnaam):
     toon_alle(contracten)
 
 def toon_contract(contractnummer):
-    print("Contract Printen")
+    print('toon contract')
 
-def toon_alle_gegevens_uit_lijst():
-    toon_alle(contracten)
+def toon_alle_gegevens():
+    ########################################
+    # Voeg klant gegevens toe aan de lijst #
+    ########################################
     alle_gegevens = {
         "klanten": {},  # Maak een lege dictionary voor klanten
         "fietsen": {},  # Maak een lege dictionary voor fietsen
@@ -212,15 +272,18 @@ def toon_alle_gegevens_uit_lijst():
     # Print de klantgegevens als een dictionary
     print(json.dumps(alle_gegevens, indent=4))
 
-def toon_alle_gegevens_uit_db(): 
+    #####################################
+    # Voeg klant gegevens toe aan de db #
+    #####################################
+
     # Define the SQL query to select all data from the "sporthal" table in the "Basketbal" database
-    query = 'SELECT * FROM Klanten'
+    fetch_query = 'SELECT * FROM Klanten'
 
     # Create a cursor object to execute SQL queries
     mycursor = mydb.cursor()
 
     # Execute the SQL query
-    mycursor.execute(query)
+    mycursor.execute(fetch_query)
 
     # Fetch all the results from the executed query
     result = mycursor.fetchall()
@@ -275,32 +338,32 @@ def main():
         choice = input("Enter your choice (1-9): ")
 
         if choice == "9":
+            if mydb.is_connected():
+                mydb.close()
             print("Programma beëindigen. Tot de volgende keer!")
             break
         elif choice == "1":
             toevoegen_klant()
-            toon_alle(klanten)
         elif choice == "2":
-            klantnummer = int(input("Voer het klantnummer in dat moet worden gewijzigd: "))
-            wijzigen_klant(klantnummer)
+            toon_alle(klanten)
         elif choice == "3":
             klantnummer = int(input("Voer het klantnummer in dat moet worden verwijderd: "))
-            verwijderen_klant(klantnummer)  # Pas klantnummer argument here
+            verwijderen_klant(klantnummer)
         elif choice == "4":
             zoeken_klant()
         elif choice == "5":
-            toevoegen_fiets()
-            toon_alle(fietsen)
+            print('5')
         elif choice == "6":
             klantnummer = input("Voer uw klantnummer in.. ")
             vestigingsnaam = input("Voer uw vestigingsnaam in.. ")
             toevoegen_contract(klantnummer, vestigingsnaam)
         elif choice == "7":
-            # toon_contract(contractnummer)
-            print('Contract tonen')
+            contractnummer = int(input("Voer het contractnummer in dat moet worden getoond: "))
+            toon_contract(contractnummer)
+            print("Contract Printen")
         elif choice == "8":
-            toon_alle_gegevens_uit_lijst()
-            toon_alle_gegevens_uit_db()
+            toon_alle_gegevens()
+            toon_alle(klanten)
 
         else:
             print("Ongeldige keuze. Probeer een nummer optie tussen 0 en 9.")
