@@ -3,7 +3,8 @@
 - [ ] Add cursor close where needed
 - [ ] fix functie 2
 - [x] fix functie 7
-- [ ] Cannot add or update a child row  a foreign key contraint --> INSERT query
+- [ ] cannot add or update a child row  a foreign key contraint --> INSERT query --> kan geen klanten, fietsen, contracten toevoegen
+- [ ] contracten heeft niet alle benodige tabellen
 
 ## Inleiding
 
