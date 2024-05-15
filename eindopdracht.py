@@ -3,7 +3,9 @@ import mysql.connector
 from datetime import datetime
 from tabulate import tabulate
 
-# Replace the values with your actual database connection details
+#####################################
+#           DB Connection           #
+#####################################
 mydb = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
@@ -11,9 +13,11 @@ mydb = mysql.connector.connect(
     database="goDutch"
 )
 
-# Data
+#############################
+#           Data            #
+#############################
 klanten = [
-        ["Klantnummer", "Voornaam", "Achternaam", "Adres", "Postcode", "Woonplaats", "Bankrekeningnummer"],
+        ["Klantnummer", "Voornaam", "Achternaam", "Adres", "Postcode", "plaats", "Bankrekeningnummer"],
         [1, "Mikey", "Rojas", "Dam", "1012JS", "Amsterdam", 'NLABNA001'],
         [2, "Jan", "Jantjes", "Leidseplein", "3010WW", "Rotterdam", 'NLING0002'],
         [3, "Peter", "Petersen", "Rembrandtplein", "2012WW", "Den Haag", 'NLRABO003']
@@ -41,7 +45,9 @@ contracten = [
     [303, 4, "Utrecht Centrum", "2022-03-25", "2022-09-23"]
 ]
 
-# Functies
+#################################
+#           Functies            #
+#################################
 def toon_menu():
     print("\n"*9)
     print("+------------------------------------+")
@@ -67,10 +73,10 @@ def toevoegen_klant():
     straat = input("Voer uw adres in: ")
     huisnummer = input("Voer uw huisnummer in: ")
     postcode = input("Voer uw postcode in: ")
-    woonplaats = input("Voer uw woonplaats in: ")
+    plaats = input("Voer uw plaats in: ")
     categorie = input("Voer uw categorie in: ")
     bankrekeningnummer = input("Voer bankrekeningnummer in: ")
-    nieuwe_klant = [int(klantnummer), voornaam, achternaam, straat, postcode, woonplaats, bankrekeningnummer]
+    nieuwe_klant = [int(klantnummer), voornaam, achternaam, straat, postcode, plaats, bankrekeningnummer]
 
     ###############################
     # Voeg klant toe aan de lijst #
@@ -83,7 +89,11 @@ def toevoegen_klant():
     ############################
 
     # Definieer de SQL-query's met behulp van f-strings
-    insert_klant_query = f"INSERT INTO Klanten (idKlanten, Voornaam, Tussenvoegsel, Achternaam) VALUES ('{klantnummer}', '{voornaam}', '{tussenvoegsel}', '{achternaam}')"
+    # insert_klant_query = f"INSERT INTO klanten (klantID, voornaam, tussenvoegsel, achternaam, bankrekeningnummer, k_adresID) VALUES ('{klantnummer}', '{voornaam}', '{tussenvoegsel}', '{achternaam}, {bankrekeningnummer}, {klantnummer}');"
+    insert_klant_query = f"INSERT INTO klanten (klantID, voornaam, tussenvoegsel, achternaam, bankrekeningnummer, k_adresID) VALUES ('1', 'Jan', '', 'Jantjes', 'NL66INGB012345678', '1');"
+    
+    # Definieer de SQL-query's met behulp van f-strings
+    # insert_adres_query = f"INSERT INTO Adressen (adresID, straat, huisnummer, postcode, plaats, categorie) VALUES ('{klantnummer}', '{straat}', '{huisnummer}', '{postcode}', '{plaats}', 'Klant')"
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
@@ -93,6 +103,7 @@ def toevoegen_klant():
         mycursor.execute(insert_klant_query)
 
         # Voer de tweede query uit om de adresgegevens in te voegen
+        # mycursor.execute(insert_adres_query)
 
         # Bevestig de transactie om de wijzigingen in de database permanent te maken
         mydb.commit()
@@ -148,6 +159,7 @@ def zoeken_klant():
     ##########################
     # Zoek klant in de lijst #
     ##########################
+
     # Vraag de gebruiker om een deel van de achternaam om te zoeken
     deel_achternaam = input("Voer een deel van de achternaam in om te zoeken: ")
 
@@ -379,7 +391,7 @@ def toon_alle_gegevens():
             "Achternaam": klant[2],
             "Adres": klant[3],
             "Postcode": klant[4],
-            "Woonplaats": klant[5],
+            "plaats": klant[5],
             "Bankrekeningnummer": klant[6],
             "Contracten": []  # Maak een lege lijst voor contracten van deze klant
         }
@@ -448,7 +460,9 @@ def toon_alle_gegevens():
     for db_klanten in result:
         print(db_klanten)
 
-# Utility
+#################################
+#           Utility             #
+#################################
 def toon_alle(data):
     ## Find maximum width for each column
     column_widths = [max(len(str(item)) for item in column) for column in zip(*data)]
@@ -487,7 +501,9 @@ def genereer_fietsnummer():
     hoogste_fietsnummer = vind_hoogste_nummer(fietsen, "Fietsnummer")
     return hoogste_fietsnummer + 1
 
-# Program
+#############################
+#           Program         #
+#############################
 def main():
     while True:
         toon_menu()
