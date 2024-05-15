@@ -15,11 +15,11 @@ USE `goDutch` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `goDutch`.`Adressen` (
   `adresID` INT NOT NULL AUTO_INCREMENT,
-  `postcode` VARCHAR(6) NOT NULL,
-  `huisnummer` VARCHAR(6) NOT NULL,
   `straat` VARCHAR(45) NOT NULL,
+  `huisnummer` VARCHAR(6) NOT NULL,
+  `postcode` VARCHAR(6) NOT NULL,
   `plaats` VARCHAR(45) NOT NULL,
-  `catagorie` VARCHAR(45) NOT NULL,
+  `categorie` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`adresID`),
   UNIQUE INDEX `adresID_UNIQUE` (`adresID` ASC) VISIBLE)
 ENGINE = InnoDB
