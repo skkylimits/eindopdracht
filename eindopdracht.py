@@ -118,7 +118,25 @@ def toevoegen_klant():
     print("Klant toegevoegd aan de database met ID van de laatst toegevoegde klant:", mycursor.lastrowid)
 
 def wijzigen_klant():
-    print('wijzigen klant')
+    query = "SELECT * FROM klanten AS k JOIN Adressen AS a ON k.k_adresID = a.adresID WHERE klanten.klantID = %s"
+    klant_id = input('geef klant id')
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+    mycursor.execute(query, (klant_id,))
+    klant = mycursor.fetchone()
+    print (klant)
+    wijzigen = input('wilt u deze klant wijzigen? (ja/nee) ')
+    if wijzigen.lower() == 'ja':
+         while True:
+            onderdeel_wijziging = input ('welk onderdeel wilt u wijzigen? (voornaam/achternaam/adres/postcode/woonplaats/huisnummer/bankrekeningnummer) ')
+            if onderdeel_wijziging.lower() == 'stop':
+                 break
+            else:
+                nieuwe_waarde = input('Nieuwe waarde voor {}: '.format(onderdeel_wijziging))
+                query = "UPDATE klant SET {} = %s WHERE klantnummer = %s".format(onderdeel_wijziging)
+                mycursor.execute(query, (nieuwe_waarde, klant_id))
+                mydb.commit()
+                print("Klantgegevens zijn bijgewerkt.")
 
 def verwijderen_klant(klantnummer):
     ################################
@@ -137,7 +155,7 @@ def verwijderen_klant(klantnummer):
     #############################
 
     # Maak een SQL-query om de klant te verwijderen
-    delete_query = f"DELETE FROM Klanten WHERE idKlanten = '{klantnummer}'"
+    delete_query = f"DELETE FROM Adressen WHERE adresID = '{klantnummer}'"
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
