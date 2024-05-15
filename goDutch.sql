@@ -106,19 +106,19 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `goDutch`.`Fietsen` (
   `fietsnummer` INT NOT NULL AUTO_INCREMENT,
-  `Merk` VARCHAR(45) NOT NULL,
+  `merk` VARCHAR(45) NOT NULL,
   `model` VARCHAR(45) NOT NULL,
   `fietstype` VARCHAR(45) NOT NULL,
   `elektrisch` VARCHAR(15) NOT NULL,
   `dagprijs` FLOAT NOT NULL,
-  `Aankoopdatum` DATE NOT NULL,
-  `f_vestegingsID` INT NOT NULL,
+  `aankoopdatum` DATE NOT NULL,
+  `f_vestigingsID` INT NOT NULL,
   PRIMARY KEY (`fietsnummer`),
-  INDEX `fk_Fiets_Vesteging1_idx` (`f_vestegingsID` ASC) VISIBLE,
+  INDEX `fk_Fiets_Vesteging1_idx` (`f_vestigingsID` ASC) VISIBLE,
   UNIQUE INDEX `fietsnummer_UNIQUE` (`fietsnummer` ASC) VISIBLE,
-  CONSTRAINT `fk_Fiets_Vesteging1`
-    FOREIGN KEY (`f_vestegingsID`)
-    REFERENCES `goDutch`.`Vestiging` (`vestegingsID`))
+  CONSTRAINT `fk_Fiets_Vestiging1`
+    FOREIGN KEY (`f_vestigingsID`)
+    REFERENCES `goDutch`.`Vestiging` (`vestigingsID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
