@@ -305,19 +305,15 @@ def toevoegen_contract(klantnummer, vestigingsnaam):
     print("Contract toegevoegd aan de database met ID van de laatst toegevoegde contract:", mycursor.lastrowid)
 
 def toon_contract(contractnummer):
-    ###############################
-    # Voeg fiets toe aan de lijst #
-    ###############################
-    date_today =  datetime.today()
-    date_today_str = date_today.strftime('%d-%m-%Y')
-
+    width_langste_woord = 10  # De breedte van de breedste term, rekening houdend met "Vestiging:"
+    klantnummer = '303'
+    contractnummer = contractnummer
 
     # Search for the sublist with contract number 303
     contract_info = None
     for contract in contracten[1:]:
         if contract[0] == contractnummer:
             contract_info = contract
-            print(contract_info)
             break
 
     if contract_info:
@@ -330,7 +326,6 @@ def toon_contract(contractnummer):
     for klant in klanten[1:]:
         if klant[0] == klantnummer:
             klant_informatie = klant
-            print(klant_informatie)
             break
 
     # Zoek locatieinformatie
@@ -338,55 +333,123 @@ def toon_contract(contractnummer):
     for locatie in locaties[1:]:
         if locatie[1] == locatie_naam:
             locatie_informatie = locatie
-            print(locatie_informatie)
             break
-    
     
     if klant_informatie and len(klant_informatie) >= 3:  # Controleer of klant_informatie bestaat en voldoende elementen heeft
         klant_naam = klant_informatie[2]
-        print(klant_naam)
     else:
         klant_naam = "Onbekend"  # Als de informatie ontbreekt, gebruik een standaardwaarde
 
-    print(klant_naam)
-    print("{:^100}".format("____"))
-    print("{:^100}".format("/  __\\"))
-    print("{:^100}".format("(  @ @ )"))
-    print("{:^100}".format("\\  O /"))
-    print("{:^100}".format("\\__/"))
-    text1 = "-"
-    print(text1 * 100)
-    print("{:<25} {:<35} {:<15} {:<25}".format(f"Contractnr: {contractnummer}", f"Datum: {date_today_str}", "Vestiging", locatie_informatie[2]))
-    print("{:<25} {:<35} {:<15} {:<25}".format(f"", "", "", locatie_informatie[3] + ' ' + locatie_informatie[4]))
+    #############################
+    #           LOGO            #
+    #############################
+    print("                  ____  ")
+    print("                 /  __\\")
+    print("                (  @ @ )")
+    print("                 \\  O /")
+    print("                  \\__/ ")
+    print("                        ")
 
-    print("{:<7} {:<69} {:<25}".format("Klant:", klant_naam, ""))
-    print("{:<7} {:<10} {:<51}".format("Adres:", "ADRES", ""))
-    print("{:<7} {:<10} {:<51}".format("", "POSTCODE PLAATS", ""))
-    print()
-    print()
-    print("{:<15} {:<10}".format("Startdatum:", "DATUM"))
-    print("{:<15} {:<10} {:<30}".format("Inleverdatum:", "DATUM", "-> aantal dagen: DAG"))
-    print(text1 * 100)
-    print()
-    print("FIETSEN:\n")
-    print("{:<15} {:<35} {:<15} {:<13} {:<20}".format("Fietsnr", "Type", "Model", "Elektrisch", "Prijs per dag"))
-    print("{:<15} {:<35} {:<15} {:^13} {:>20}".format("1 (Batavus)", "1. (Randstad Racer D)", "Dames", "Ja", "45.00"))
-    print()
-    print()
-    print()
-    print("TOTAAL\n")
+    #################################
+    #           CONTRACT            #
+    #################################
+    
+    # Get date today
+    date_today =  datetime.today()
+    date_today_str = date_today.strftime('%d-%m-%Y')
 
-    data = [
-        ["DAGEN", "DAGPRIJS", "TOTAAL"]
-    ]
-    headers = ["Aantal dagen", "Prijs per dag", "Totaalbedrag"]
-    kolombreedte = 25
-    for row in data:
-        formatted_row = [f"{cell:<{kolombreedte}}" for cell in row]
+    print(f"Contractnr: {str(contractnummer):<{width_langste_woord}}", end="\t")
+    print(f"Datum: {str(date_today_str):<{width_langste_woord}}", end="\n")
+    
+    #################################
+    #           VESTIGING           #
+    #################################
+    print(f"{'':<{width_langste_woord}}")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Vestiging: {locatie_informatie[4]:<{width_langste_woord}}", end="\t")
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
 
-    print(tabulate(data, headers=headers, colalign=["right", "right", "right"]))
-    print("\n" * 3)
-    print("NB: Je hoeft alleen de gegevens op de juiste plek in het contract te tonen. Het logo, de belijning, de tabellen en de kleuren dienen hier alleen ter illustratie.")
+    # Lengte van de kolommen
+    kolom_breedte = 11
+
+    # Adresgegevens
+    print(f"{'':<{kolom_breedte}}{locatie_informatie[2]}")
+    print(f"{'':<{kolom_breedte}}{locatie_informatie[3]}")
+
+    #############################
+    #           KLANT           #
+    #############################
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Klant: {str(klant_informatie[1]):<{3}}, {str(klant_informatie[2])} (klantnr {klant_informatie[0]})")
+    # Adresgegevens
+
+    # Lengte van de kolommen
+    kolom_breedte = 7
+
+    # Header
+    print(f"{'Adres:':<{kolom_breedte}}{klant_informatie[3]}")
+    print(f"{'':<{kolom_breedte}}{klant_informatie[4]} {klant_informatie[5]}")
+
+    #############################
+    #           DATUM           #
+    #############################
+
+    # Converteer de gebruikersinvoer naar datetime objecten
+    startdatum = datetime.strptime(contract_info[3], "%Y-%m-%d")
+    inleverdatum = datetime.strptime(contract_info[4], "%Y-%m-%d")
+
+    # Verschil berekenen
+    verschil = inleverdatum - startdatum
+
+    # Aantal dagen
+    aantal_dagen = verschil.days
+ 
+
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Stardatum: {str(contract_info[3]):<{width_langste_woord}}")
+    print(f"Inleverdatum: {str(contract_info[4]):<{width_langste_woord}} --> aantal dagen: {aantal_dagen}", end="\n")
+    print("")
+
+    print(f'-----------------------------------------------------------------------------------', end="\n")
+
+    #############################
+    #           FIETSEN         #
+    #############################  
+    print("")
+    print("FIETSEN:")
+    print("")
+
+    # Gegevens
+    gehuurde_fietsen = 3
+    prijs_per_dag = 25
+
+    # Header
+    print(f"{'Fietsnr':<15} {'Type':<15} {'Model':<15} {'Elektrisch':<15} {'Prijs Per Dag':<15}")
+
+    # Gegevens voor elke dag
+    for dag in range(1, 4):
+        totaalbedrag = dag * prijs_per_dag
+        print(f"{dag:<15} {prijs_per_dag:<15} {totaalbedrag:<15} {totaalbedrag:^15} {totaalbedrag:>15}")
+    
+    print("")
+    print(f'-----------------------------------------------------------------------------------', end="\n")
+    
+    #############################
+    #           Totaal          #
+    #############################
+    print("")
+    print("TOTAAL:")
+    print("")
+
+   # Gegevens
+    prijs_per_dag = 25
+
+    # Header
+    print(f"{'Aantal dagen':>15} {'Prijs per dag':>15} {'Totaalbedrag':>15}")
+
+    # Gegevens voor elke dag
+    for dag in range(1, 2):
+        totaalbedrag = dag * prijs_per_dag
+        print(f"{aantal_dagen:>15} {prijs_per_dag:>15} {totaalbedrag:>15}")
 
 def toon_alle_gegevens():
     ########################################
