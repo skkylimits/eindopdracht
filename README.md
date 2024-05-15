@@ -3,6 +3,7 @@
 - [ ] Add cursor close where needed
 - [ ] fix functie 2
 - [x] fix functie 7
+- [ ] Cannot add or update a child row  a foreign key contraint --> INSERT query
 
 ## Inleiding
 
