@@ -228,7 +228,7 @@ def toevoegen_fiets():
     fietstype = input("Voer de fietstype in: ")
     elektrisch = input("Is de fiets elektrisch? True/False: ")
     dagprijs = input("Voer de dagprijs in: ")
-    aankoopdatum = input("Voer de aankoopdatum in: ")
+    aankoopdatum = input("Voer de aankoopdatum in yy-mm-dd: ")
     nieuwe_fiets = [int(fietsnummer), merk, model, fietstype, elektrisch, dagprijs, aankoopdatum]
     fietsen.append(nieuwe_fiets)
     toon_alle(fietsen)
@@ -238,7 +238,8 @@ def toevoegen_fiets():
     ############################
 
     # Definieer de SQL-query's met behulp van f-strings
-    insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, Merk, Model, Fietstype, Electrisch, Dagprijs, Aankoopdatum) VALUES ('{fietsnummer}', '{merk}', '{model}', '{fietstype}', '{elektrisch}', '{dagprijs}', '{aankoopdatum}')"
+    # insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestigingsID) VALUES ('{fietsnummer}', '{merk}', '{model}', '{fietstype}', '{elektrisch}', '{dagprijs}', '{aankoopdatum}', '{fietsnummer}')"
+    insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestigingsID) VALUES ('303', 'Test', 'Tester', 'Testen', 'Ja', '12.0', '1993-09-12', '303')"
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
