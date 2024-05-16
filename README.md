@@ -1,9 +1,12 @@
 # Eindopdracht
 
 - [ ] Add cursor close where needed
-- [ ] fix functie 2 
+- [ ] fix functie 2 met db connection
 - [ ] cannot add or update a child row  a foreign key contraint --> INSERT query --> kan geen klanten, fietsen, contracten toevoegen
 - [ ] fix functie met database 7 contracten heeft niet alle benodige tabellen, toon contract update gehuurde fietsen in lijst & maak het zodat er uit de database datagehaald wordt
+- [ ] checklist
+- [ ] opgevraagde documenten
+- [ ] test programma
 
 ## Inleiding
 
