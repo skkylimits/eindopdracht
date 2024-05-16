@@ -32,17 +32,17 @@ fietsen = [
 
 locaties = [
     ["locatienummer", "Vestigingsnaam", "Adres", "Postcode", "Plaats"],
-    [201, "WTC", "Stationsplein 9", "1012 AB", "Amsterdam"],
-    [202, "Rotterdam Zuid", "Laan op Zuid 393", "3071 AA", "Rotterdam"],
-    [203, "Den Haag Centrum", "Spui 68", "2511 BT", "Den Haag"]
+    [201, "Amsterdam Centraal", "Stationsplein 9", "1012 AB", "Amsterdam"],
+    [202, "WTC", "Laan op Zuid 393", "1071 AA", "Amsterdam"],
+    [203, "NDSM", "Spui 68", "1012 BT", "Amsterdam"]
 ]
 
 contracten = [
     ["Contractnummer", "Klantnummer", "Vestigingsnaam", "Startdatum", "Inleverdatum"],
     [301, 1, "Amsterdam Centraal", "2022-03-01", "2022-03-10"],
-    [302, 2, "Rotterdam Zuid", "2022-02-20", "2022-03-05"],
-    [303, 3, "Den Haag Centrum", "2022-01-15", "2022-01-25"],
-    [303, 4, "Utrecht Centrum", "2022-03-25", "2022-09-23"]
+    [302, 2, "WTC", "2022-02-20", "2022-03-05"],
+    [303, 3, "NDSM", "2022-01-15", "2022-01-25"],
+    [303, 4, "WTC", "2022-03-25", "2022-09-23"]
 ]
 
 #################################
@@ -320,6 +320,7 @@ def toon_contract(contractnummer):
         # Haal klantnummer en locatienaam op uit de contractinformatie
         klantnummer = contract_info[1]
         locatie_naam = contract_info[2]
+        print(locatie_naam)
 
     # Zoek klantinformatie
     klant_informatie = None
@@ -331,16 +332,21 @@ def toon_contract(contractnummer):
     # Zoek locatieinformatie
     locatie_informatie = None
     for locatie in locaties[1:]:
+        print(locatie)
         if locatie[1] == locatie_naam:
             locatie_informatie = locatie
             break
+
+
+    # print(locatie)
     
     if klant_informatie and len(klant_informatie) >= 3:  # Controleer of klant_informatie bestaat en voldoende elementen heeft
         klant_naam = klant_informatie[2]
     else:
         klant_naam = "Onbekend"  # Als de informatie ontbreekt, gebruik een standaardwaarde
 
-    #############################
+  
+  #############################
     #           LOGO            #
     #############################
     print("                  ____  ")
@@ -365,7 +371,7 @@ def toon_contract(contractnummer):
     #           VESTIGING           #
     #################################
     print(f"{'':<{width_langste_woord}}")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
-    print(f"Vestiging: {locatie_informatie[4]:<{width_langste_woord}}", end="\t")
+    print(f"Vestiging: {locatie_informatie[1]:<{width_langste_woord}}", end="\t")
     print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
 
     # Lengte van de kolommen
