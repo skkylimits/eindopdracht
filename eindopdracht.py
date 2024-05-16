@@ -399,8 +399,12 @@ def toon_contract(contractnummer):
 
     # Verschil berekenen
     verschil = inleverdatum - startdatum
-
-    # Aantal dagen
+ 
+    '''
+    verschil.days is een attribuut van het verschil tussen twee datetime-objecten. 
+    In dit geval wordt verschil berekend door inleverdatum - startdatum. Dit geeft een timedelta-object terug.
+    Wat het verschil aangeeft tussen de twee datums in dagen. verschil.minutes doet dit voor minuten enz.
+    '''
     aantal_dagen = verschil.days
  
 
