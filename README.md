@@ -171,3 +171,8 @@ Specifieke opdracht voor Cyber Security
 
 2. Maak een nieuwe gebruiker aan in de database en geef deze gebruiker alleen SELECT
    rechten.
+
+
+- wat is type heren dames etc
+- wat is elektrisch
+- wat is vestigingid

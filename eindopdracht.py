@@ -91,7 +91,9 @@ def toevoegen_klant():
     mycursor = mydb.cursor()
 
     # Voeg eerst het adres toe aan de adresstabel        
-    adres_query = "INSERT INTO Adres (postcode, huisnummer, straat, plaats, catagorie) VALUES (%s, %s, %s, %s, %s)"        
+    adres_query = '''INSERT INTO Adres (postcode, huisnummer, straat, plaats, catagorie) 
+                     VALUES (%s, %s, %s, %s, %s)
+                  '''       
     adres_values = (postcode, huisnummer, straat, plaats, categorie)         
     mycursor.execute(adres_query, adres_values)         
 
@@ -273,7 +275,8 @@ def toevoegen_fiets():
     fietstype = input("Voer de fietstype in: ")
     elektrisch = input("Is de fiets elektrisch? True/False: ")
     dagprijs = input("Voer de dagprijs in: ")
-    aankoopdatum = input("Voer de aankoopdatum in yy-mm-dd: ")
+    aankoopdatum = input("Voer de aankoopdatum in yyyy-mm-dd: ")
+    vestigingsid = input("Voer de vestigingsid in: ")
     nieuwe_fiets = [int(fietsnummer), merk, model, fietstype, elektrisch, dagprijs, aankoopdatum]
     fietsen.append(nieuwe_fiets)
     toon_alle(fietsen)
@@ -284,7 +287,7 @@ def toevoegen_fiets():
 
     # Definieer de SQL-query's met behulp van f-strings
     # insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestigingsID) VALUES ('{fietsnummer}', '{merk}', '{model}', '{fietstype}', '{elektrisch}', '{dagprijs}', '{aankoopdatum}', '{fietsnummer}')"
-    insert_fiets_query = f"INSERT INTO Fiets (merk, model, fietstype, elektrisch, dagprijs, aankoopdatum) VALUES ('Test', 'Tester', 'Testen', 'Ja', '12.0', '1993-09-12')"
+    insert_fiets_query = f"INSERT INTO Fiets (merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestegingsID)  VALUES ('{merk}', '{model}', '{fietstype}', '{elektrisch}', '{dagprijs}', '{aankoopdatum}', '{vestigingsid}')"
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
@@ -304,7 +307,52 @@ def toevoegen_fiets():
         print("Er is een fout opgetreden bij het toevoegen van de fiets:", e)
         mydb.rollback()
 
+
+def selecteer_fietsen(startdatum, inleverdatum):
+    fietskeuze = input("Welke fiets wilt u huren? (bijv. 2 heren elektrisch, 2 dames niet-elektrisch): ")
+    fietskeuze = fietskeuze.split(", ")
+    gekozen_fietsen = []    
+    for keuze in fietskeuze:
+        if " " not in keuze:
+            print("Dit is geen geldige keuze, probeer het opnieuw")
+            continue
+        aantal, type, elektrisch = keuze.split(" ")
+        elektrisch = elektrisch.lower() == "elektrisch"
+        # geeft lijst met types en elektrisch of niet elektrisch
+        gekozen_fietsen.append((type, aantal, elektrisch))
+    return gekozen_fietsen
+
+def voeg_fietsen_toe_aan_contract(vestegingsid, gekozen_fietsen, datum_string, inleverdatum_string):
+    beschikbare_fietsen = []
+    vestegingsid = input("In welke vesteging wilt u het contract opstellen? Centraal station/ WTC / NDSM-werf: ")
+    if gekozen_fietsen[0][2] == True:
+        elektrisch = 'Ja'
+        print('elektrisch ja')
+    else:
+        elektrisch = 'Nee'
+        print('elektrisch ja')
+
+    # convert tuple to list
+    type_fietsen = gekozen_fietsen[0]
+    type_fietsen_list = list(type_fietsen)
+
+    print(type_fietsen_list[0])
+    print(elektrisch)
+    print(datum_string)
+    print(inleverdatum_string)
+    print(vestegingsid)
+
+    query = f"SELECT * FROM Fiets JOIN Huur ON Fiets.fietsnummer = Huur.Fiets_Fietsnummer WHERE fietstype = '{type_fietsen_list[0]}' AND elektrisch = '{elektrisch}' AND Fiets_Fietsnummer NOT IN (SELECT Fiets_Fietsnummer FROM Huur WHERE '{datum_string}' BETWEEN startdatum AND inleverdatum OR '{inleverdatum_string}' BETWEEN startdatum AND inleverdatum) AND f_vestigingsID = {vestegingsid};"
+    
+    mycursor.execute(query)
+    result = mycursor.fetchall()
+    print(result)
 def toevoegen_contract(klantnummer, vestigingsnaam):
+    datum_string = input("Voer ingangsdatum in..")
+    inleverdatum_string = input ("voer inleverdatum in..")
+
+    
+def toevoegen_contract2(klantnummer, vestigingsnaam):
     ##################################
     # Voeg contract toe aan de lijst #
     ##################################
@@ -661,10 +709,20 @@ def main():
             zoeken_klant()
         elif choice == "5":
             toevoegen_fiets()
+            
         elif choice == "6":
+            
+            # toevoegen_contract(klantnummer, vestigingsnaam)
+            datum_string = input("Voer ingangsdatum in..")
+            inleverdatum_string = input ("voer inleverdatum in..")
+            test = selecteer_fietsen(datum_string, inleverdatum_string)
             klantnummer = input("Voer uw klantnummer in.. ")
-            vestigingsnaam = input("Voer uw vestigingsnaam in.. ")
-            toevoegen_contract(klantnummer, vestigingsnaam)
+            vestigingsid = input("Voer het vestigingsid in.. ")
+
+
+            # voeg_fietsen_toe_aan_contract(vestigingsid, test, datum_string, inleverdatum_string)
+
+            toevoegen_contract(klantnummer, vestigingsid)
         elif choice == "7":
             contractnummer = int(input("Voer het contractnummer in dat moet worden getoond: "))
             toon_contract(contractnummer)
