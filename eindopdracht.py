@@ -305,6 +305,10 @@ def toevoegen_contract(klantnummer, vestigingsnaam):
     print("Contract toegevoegd aan de database met ID van de laatst toegevoegde contract:", mycursor.lastrowid)
 
 def toon_contract(contractnummer):
+    ##################################
+    # Voeg contract toe aan de lijst #
+    ##################################
+
     width_langste_woord = 10  # De breedte van de breedste term, rekening houdend met "Vestiging:"
     contractnummer = contractnummer
 
@@ -341,7 +345,7 @@ def toon_contract(contractnummer):
         klant_naam = "Onbekend"  # Als de informatie ontbreekt, gebruik een standaardwaarde
 
   
-  #############################
+    #############################
     #           LOGO            #
     #############################
     print("                  ____  ")
