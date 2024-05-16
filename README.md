@@ -52,7 +52,7 @@ berekening met de gegevens in de database.
 
 ## Op te leveren producten
 
-- [ ] Een Python script
+- [x] Een Python script
 - [x] Een ERD
 - [ ] Een Relationeel Model
 - [x] Een SQL script om de database te creëren
@@ -60,10 +60,10 @@ berekening met de gegevens in de database.
 ## Checklist
 
 - [x] Maak een ERD in Lucidchart.
-- [ ] Maak van het ERD een Relationeel Model in MySQL Workbench.
+- [x] Maak van het ERD een Relationeel Model in MySQL Workbench.
 - [x] Maak van het Relationeel Model een fysieke database met de optie Forward Engineering.
 - [ ] Vul de database met de gegevens uit het voorbeeldcontract.
-- [ ] Schrijf een Python programma met daarin het gevraagde menu en functies.
+- [x] Schrijf een Python programma met daarin het gevraagde menu en functies.
 - [x] Met de functie zoeken_klant() kan op een deel van de achternaam worden gezocht.
 - [ ] De functie toon_alle_gegevens( ) toont de gegevens van alle klanten, fietsen en contracten
       gesorteerd en overzichtelijk met behulp van string formatting. Voor ieder contract dient de
