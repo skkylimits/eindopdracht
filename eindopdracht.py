@@ -118,25 +118,44 @@ def toevoegen_klant():
     print("Klant toegevoegd aan de database met ID van de laatst toegevoegde klant:", mycursor.lastrowid)
 
 def wijzigen_klant():
-    query = "SELECT * FROM klanten AS k JOIN Adressen AS a ON k.k_adresID = a.adresID WHERE klanten.klantID = %s"
-    klant_id = input('geef klant id')
-    # Maak een cursor object om SQL-query's uit te voeren
-    mycursor = mydb.cursor()
-    mycursor.execute(query, (klant_id,))
-    klant = mycursor.fetchone()
-    print (klant)
-    wijzigen = input('wilt u deze klant wijzigen? (ja/nee) ')
-    if wijzigen.lower() == 'ja':
-         while True:
-            onderdeel_wijziging = input ('welk onderdeel wilt u wijzigen? (voornaam/achternaam/adres/postcode/woonplaats/huisnummer/bankrekeningnummer) ')
-            if onderdeel_wijziging.lower() == 'stop':
-                 break
-            else:
-                nieuwe_waarde = input('Nieuwe waarde voor {}: '.format(onderdeel_wijziging))
-                query = "UPDATE klant SET {} = %s WHERE klantnummer = %s".format(onderdeel_wijziging)
-                mycursor.execute(query, (nieuwe_waarde, klant_id))
-                mydb.commit()
-                print("Klantgegevens zijn bijgewerkt.")
+    klantnummer = int(input("Voer het klantnummer in van de klant die u wilt bijwerken: "))
+    
+    # Zoeken naar de index van de klant in de lijst
+    klant_index = None
+    for klant in klanten[1:]:
+        if klant[0] == klantnummer:
+            klant_index = klanten.index(klant)
+            break
+    
+    if klant_index is not None:
+        # Vraag om nieuwe gegevens voor de klant
+        nieuwe_voornaam = input("Voer de nieuwe voornaam in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_achternaam = input("Voer de nieuwe achternaam in (druk op Enter om de huidige waarde te behouden): ")
+        nieuw_adres = input("Voer het nieuwe adres in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_postcode = input("Voer de nieuwe postcode in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_plaats = input("Voer de nieuwe plaats in (druk op Enter om de huidige waarde te behouden): ")
+        nieuw_bankrekeningnummer = input("Voer het nieuwe bankrekeningnummer in (druk op Enter om de huidige waarde te behouden): ")
+
+        # Bijwerken van
+        
+        # Bijwerken van de klantgegevens
+        if nieuwe_voornaam.strip():
+            klanten[klant_index][1] = nieuwe_voornaam
+        if nieuwe_achternaam.strip():
+            klanten[klant_index][2] = nieuwe_achternaam
+        if nieuw_adres.strip():
+            klanten[klant_index][3] = nieuw_adres
+        if nieuwe_postcode.strip():
+            klanten[klant_index][4] = nieuwe_postcode
+        if nieuwe_plaats.strip():
+            klanten[klant_index][5] = nieuwe_plaats
+        if nieuw_bankrekeningnummer.strip():
+            klanten[klant_index][6] = nieuw_bankrekeningnummer
+        
+        print("Klantgegevens succesvol bijgewerkt.")
+    else:
+        print("Klantnummer niet gevonden.")
+
 
 def verwijderen_klant(klantnummer):
     ################################
