@@ -306,7 +306,6 @@ def toevoegen_contract(klantnummer, vestigingsnaam):
 
 def toon_contract(contractnummer):
     width_langste_woord = 10  # De breedte van de breedste term, rekening houdend met "Vestiging:"
-    klantnummer = '303'
     contractnummer = contractnummer
 
     # Search for the sublist with contract number 303
@@ -320,7 +319,6 @@ def toon_contract(contractnummer):
         # Haal klantnummer en locatienaam op uit de contractinformatie
         klantnummer = contract_info[1]
         locatie_naam = contract_info[2]
-        print(locatie_naam)
 
     # Zoek klantinformatie
     klant_informatie = None
@@ -336,9 +334,6 @@ def toon_contract(contractnummer):
         if locatie[1] == locatie_naam:
             locatie_informatie = locatie
             break
-
-
-    # print(locatie)
     
     if klant_informatie and len(klant_informatie) >= 3:  # Controleer of klant_informatie bestaat en voldoende elementen heeft
         klant_naam = klant_informatie[2]
