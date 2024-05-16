@@ -50,6 +50,8 @@ Wanneer de klant de fiets huurt, wordt ook de inleverdatum ingevuld.
 Op basis van de bovenstaande informatie wordt een contract gemaakt waarop het totaalbedrag wordt getoond, gebaseerd op een
 berekening met de gegevens in de database.
 
+UPDATE
+
 ## Op te leveren producten
 
 - [x] Een Python script
