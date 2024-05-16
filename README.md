@@ -50,13 +50,11 @@ Wanneer de klant de fiets huurt, wordt ook de inleverdatum ingevuld.
 Op basis van de bovenstaande informatie wordt een contract gemaakt waarop het totaalbedrag wordt getoond, gebaseerd op een
 berekening met de gegevens in de database.
 
-UPDATE
-
 ## Op te leveren producten
 
 - [x] Een Python script
 - [x] Een ERD
-- [ ] Een Relationeel Model
+- [x] Een Relationeel Model
 - [x] Een SQL script om de database te creëren
 
 ## Checklist
@@ -153,7 +151,6 @@ dezelfde plek staan en uitgelijnd zijn als in het voorbeeldcontract.
         - Startdatum
         - Inleverdatum
         - Een overzicht van gehuurde fietsen
-
 
 ## Cyber Security
 
