@@ -1,0 +1,18 @@
+   try:
+        # Voer de eerste query uit om de klantgegevens in te voegen
+        mycursor.execute(insert_klant_query)
+
+        # Voer de tweede query uit om de adresgegevens in te voegen
+        mycursor.execute(insert_adres_query)
+
+        # Bevestig de transactie om de wijzigingen in de database permanent te maken
+        mydb.commit()
+
+        print("Nieuwe klant succesvol toegevoegd aan de database!")
+    except Exception as e:
+        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
+        print("Er is een fout opgetreden bij het toevoegen van de klant:", e)
+        mydb.rollback()
+
+    # Als je wilt controleren of de klant correct is toegevoegd, kun je bijvoorbeeld de ID van de laatst toegevoegde rij afdrukken
+    print("Klant toegevoegd aan de database met ID van de laatst toegevoegde klant:", mycursor.lastrowid)

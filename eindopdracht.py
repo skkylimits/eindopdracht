@@ -1,7 +1,6 @@
 import json
 import mysql.connector
 from datetime import datetime
-from tabulate import tabulate
 
 #####################################
 #           DB Connection           #
@@ -10,9 +9,9 @@ mydb = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
     password="Inloggen01",
-    database="goDutch"
+    database="mydb"
 )
-
+mycursor = mydb.cursor()
 #############################
 #           Data            #
 #############################
@@ -87,37 +86,30 @@ def toevoegen_klant():
     ############################
     # Voeg klant toe aan de db #
     ############################
-
-    # Definieer de SQL-query's met behulp van f-strings
-    # insert_klant_query = f"INSERT INTO klanten (klantID, voornaam, tussenvoegsel, achternaam, bankrekeningnummer, k_adresID) VALUES ('{klantnummer}', '{voornaam}', '{tussenvoegsel}', '{achternaam}, {bankrekeningnummer}, {klantnummer}');"
-    insert_klant_query = f"INSERT INTO klanten (klantID, voornaam, tussenvoegsel, achternaam, bankrekeningnummer, k_adresID) VALUES ('1', 'Jan', '', 'Jantjes', 'NL66INGB012345678', '1');"
     
-    # Definieer de SQL-query's met behulp van f-strings
-    # insert_adres_query = f"INSERT INTO Adressen (adresID, straat, huisnummer, postcode, plaats, categorie) VALUES ('{klantnummer}', '{straat}', '{huisnummer}', '{postcode}', '{plaats}', 'Klant')"
-
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
-    try:
-        # Voer de eerste query uit om de klantgegevens in te voegen
-        mycursor.execute(insert_klant_query)
+    # Voeg eerst het adres toe aan de adresstabel        
+    adres_query = "INSERT INTO Adres (postcode, huisnummer, straat, plaats, catagorie) VALUES (%s, %s, %s, %s, %s)"        
+    adres_values = (postcode, huisnummer, straat, plaats, categorie)         
+    mycursor.execute(adres_query, adres_values)         
 
-        # Voer de tweede query uit om de adresgegevens in te voegen
-        # mycursor.execute(insert_adres_query)
-
-        # Bevestig de transactie om de wijzigingen in de database permanent te maken
-        mydb.commit()
-
-        print("Nieuwe klant succesvol toegevoegd aan de database!")
-    except Exception as e:
-        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
-        print("Er is een fout opgetreden bij het toevoegen van de klant:", e)
-        mydb.rollback()
-
-    # Als je wilt controleren of de klant correct is toegevoegd, kun je bijvoorbeeld de ID van de laatst toegevoegde rij afdrukken
-    print("Klant toegevoegd aan de database met ID van de laatst toegevoegde klant:", mycursor.lastrowid)
+    mydb.commit()         
+    # Haal het gegenereerde adres-ID op        
+    mycursor.execute("SELECT LAST_INSERT_ID()")         
+    adres_id = mycursor.fetchone()[0]         
+    # Voeg vervolgens de klant toe met het juiste adres-ID        
+    klant_query = "INSERT INTO Klant (voornaam, tussenvoegsel, achternaam, bankrekeningnummer, k_adresID) VALUES (%s, %s, %s, %s, %s)"       
+    klant_values = (voornaam, tussenvoegsel, achternaam, bankrekeningnummer, adres_id)         
+    mycursor.execute(klant_query, klant_values)         
+    mydb.commit() 
 
 def wijzigen_klant():
+    ############################
+    # Wijzig klant in de lijst #
+    ############################
+
     klantnummer = int(input("Voer het klantnummer in van de klant die u wilt bijwerken: "))
     
     # Zoeken naar de index van de klant in de lijst
@@ -130,10 +122,13 @@ def wijzigen_klant():
     if klant_index is not None:
         # Vraag om nieuwe gegevens voor de klant
         nieuwe_voornaam = input("Voer de nieuwe voornaam in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_tussenvoegsel = input("Voer de nieuwe tussenvoegsel in (druk op Enter om de huidige waarde te behouden): ")
         nieuwe_achternaam = input("Voer de nieuwe achternaam in (druk op Enter om de huidige waarde te behouden): ")
-        nieuw_adres = input("Voer het nieuwe adres in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_straat = input("Voer het nieuwe adres in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_huisnummer = input("Voer het nieuwe huisnummer in (druk op Enter om de huidige waarde te behouden): ")
         nieuwe_postcode = input("Voer de nieuwe postcode in (druk op Enter om de huidige waarde te behouden): ")
         nieuwe_plaats = input("Voer de nieuwe plaats in (druk op Enter om de huidige waarde te behouden): ")
+        nieuwe_catagorie = input("Voer de nieuwe catagorie in (druk op Enter om de huidige waarde te behouden): ")
         nieuw_bankrekeningnummer = input("Voer het nieuwe bankrekeningnummer in (druk op Enter om de huidige waarde te behouden): ")
 
         # Bijwerken van
@@ -143,8 +138,8 @@ def wijzigen_klant():
             klanten[klant_index][1] = nieuwe_voornaam
         if nieuwe_achternaam.strip():
             klanten[klant_index][2] = nieuwe_achternaam
-        if nieuw_adres.strip():
-            klanten[klant_index][3] = nieuw_adres
+        if nieuwe_straat.strip():
+            klanten[klant_index][3] = nieuwe_straat
         if nieuwe_postcode.strip():
             klanten[klant_index][4] = nieuwe_postcode
         if nieuwe_plaats.strip():
@@ -156,7 +151,23 @@ def wijzigen_klant():
     else:
         print("Klantnummer niet gevonden.")
 
+    #########################
+    # Wijzig klant in de db #
+    #########################
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+    query_klant = f"UPDATE Klant SET voornaam = {nieuwe_voornaam}, tussenvoegsel = {nieuwe_tussenvoegsel}, achternaam  = {nieuwe_achternaam}, bankrekeningnummer = {nieuw_bankrekeningnummer} WHERE klantID = {klantnummer};"
+    # Voer de query uit
+    mycursor.execute(query_klant)
+    mydb.commit()
 
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+    query_adres = f"UPDATE Adres SET postcode = '{nieuwe_postcode}', huisnummer = '{nieuwe_huisnummer}', straat = '{nieuwe_straat}', plaats = '{nieuwe_plaats}', catagorie = '{nieuwe_catagorie}' WHERE AdresID = {klantnummer};"
+    # Voer de query uit
+    mycursor.execute(query_adres)
+    mydb.commit()
+  
 def verwijderen_klant(klantnummer):
     ################################
     # Verwijder klant uit de lijst #
@@ -172,26 +183,41 @@ def verwijderen_klant(klantnummer):
     #############################
     # Verwijder klant uit de db #
     #############################
-
-    # Maak een SQL-query om de klant te verwijderen
-    delete_query = f"DELETE FROM Adressen WHERE adresID = '{klantnummer}'"
-
-    # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
+    delete_query_klant = f"DELETE FROM Klant WHERE klantID = '{klantnummer}';"
+    # Voer de query uit
+    mycursor.execute(delete_query_klant)
+    mydb.commit()
 
-    try:
-        # Voer de DELETE-query uit om de klant te verwijderen
-        mycursor.execute(delete_query)
+    mycursor = mydb.cursor()
+    delete_query_klant_adres = f"DELETE FROM Adres WHERE adresID = '{klantnummer}';"
+    # Voer de query uit
+    mycursor.execute(delete_query_klant_adres)
+    mydb.commit()
 
-        # Bevestig de transactie om de wijzigingen in de database permanent te maken
-        mydb.commit()
-
-        print(f"Klant met klantnummer {klantnummer} succesvol verwijderd uit de database!")
-    except Exception as e:
-        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
-        print("Er is een fout opgetreden bij het verwijderen van de klant:", e)
-        mydb.rollback()
-
+def zoeken_klant2():
+    klant_id = None
+    wijze_zoeken = input('vult u een klantnummer of achternaam in? ')
+    if wijze_zoeken == 'klantnummer':
+        zoek_opdracht = int(input('vult u een klantnummer in: '))
+        query = "SELECT * FROM klant AS k JOIN Adres AS a ON k.k_adresID = a.adresID WHERE klant.klantID = %s"
+        mycursor.execute(query, (zoek_opdracht))
+        klant = mycursor.fetchall()
+        query = "SELECT klantID FROM Klant WHERE klant.klantID = %s"
+        mycursor.execute(query,(zoek_opdracht))
+        klant_id = mycursor.fetchone()
+        print(klant)
+    elif wijze_zoeken == 'achternaam':    
+        zoek_opdracht = input('vult u een achternaam in: ')
+        query = "SELECT * FROM klant AS k JOIN Adres AS a ON k.k_adresID = a.adresID WHERE klant.achternaam = %s"
+        mycursor.execute(query, (zoek_opdracht))
+        klant = mycursor.fetchall()
+        query = "SELECT klantID FROM Klant WHERE klant.achternaam = %s"
+        mycursor.execute(query,(zoek_opdracht))
+        klant_id = mycursor.fetchone()
+        print(klant)
+    
+    return klant_id
 def zoeken_klant():
     ##########################
     # Zoek klant in de lijst #
@@ -217,7 +243,7 @@ def zoeken_klant():
         mycursor = mydb.cursor()
             
         # Definieer de SQL-query met behulp van een f-string
-        query = f"SELECT * FROM klanten WHERE achternaam LIKE '%{deel_achternaam}%'"
+        query = f"SELECT * FROM klant WHERE achternaam LIKE '%{deel_achternaam}%'"
             
         # Voer de query uit
         mycursor.execute(query)
@@ -258,7 +284,7 @@ def toevoegen_fiets():
 
     # Definieer de SQL-query's met behulp van f-strings
     # insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestigingsID) VALUES ('{fietsnummer}', '{merk}', '{model}', '{fietstype}', '{elektrisch}', '{dagprijs}', '{aankoopdatum}', '{fietsnummer}')"
-    insert_fiets_query = f"INSERT INTO Fietsen (fietsnummer, merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestigingsID) VALUES ('303', 'Test', 'Tester', 'Testen', 'Ja', '12.0', '1993-09-12', '303')"
+    insert_fiets_query = f"INSERT INTO Fiets (merk, model, fietstype, elektrisch, dagprijs, aankoopdatum) VALUES ('Test', 'Tester', 'Testen', 'Ja', '12.0', '1993-09-12')"
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()

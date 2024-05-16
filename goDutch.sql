@@ -5,21 +5,25 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
  
 -- -----------------------------------------------------
--- Schema goDutch
+-- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `goDutch` DEFAULT CHARACTER SET utf8mb3 ;
-USE `goDutch` ;
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Adres`
+-- Schema mydb
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Adressen` (
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8mb3 ;
+USE `mydb` ;
+ 
+-- -----------------------------------------------------
+-- Table `mydb`.`Adres`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Adres` (
   `adresID` INT NOT NULL AUTO_INCREMENT,
-  `straat` VARCHAR(45) NOT NULL,
-  `huisnummer` VARCHAR(6) NOT NULL,
   `postcode` VARCHAR(6) NOT NULL,
+  `huisnummer` VARCHAR(6) NOT NULL,
+  `straat` VARCHAR(45) NOT NULL,
   `plaats` VARCHAR(45) NOT NULL,
-  `categorie` VARCHAR(45) NOT NULL,
+  `catagorie` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`adresID`),
   UNIQUE INDEX `adresID_UNIQUE` (`adresID` ASC) VISIBLE)
 ENGINE = InnoDB
@@ -27,9 +31,9 @@ DEFAULT CHARACTER SET = utf8mb3;
  
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Klant`
+-- Table `mydb`.`klant`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Klanten` (
+CREATE TABLE IF NOT EXISTS `mydb`.`klant` (
   `klantID` INT NOT NULL AUTO_INCREMENT,
   `voornaam` VARCHAR(45) NOT NULL,
   `tussenvoegsel` VARCHAR(45) NULL DEFAULT NULL,
@@ -41,15 +45,15 @@ CREATE TABLE IF NOT EXISTS `goDutch`.`Klanten` (
   UNIQUE INDEX `klantID_UNIQUE` (`klantID` ASC) VISIBLE,
   CONSTRAINT `fk_Klant_Adres1`
     FOREIGN KEY (`k_adresID`)
-    REFERENCES `goDutch`.`Adres` (`adresID`))
+    REFERENCES `mydb`.`Adres` (`adresID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Bedrijf`
+-- Table `mydb`.`Bedrijf`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Bedrijven` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Bedrijf` (
   `KVKnummer` INT NOT NULL,
   `BTWnummer` INT NOT NULL,
   `b_adresID` INT NOT NULL,
@@ -59,18 +63,18 @@ CREATE TABLE IF NOT EXISTS `goDutch`.`Bedrijven` (
   INDEX `fk_Bedrijf_Klant1_idx` (`b_klantID` ASC) VISIBLE,
   CONSTRAINT `fk_Bedrijf_Adres1`
     FOREIGN KEY (`b_adresID`)
-    REFERENCES `goDutch`.`Adres` (`adresID`),
+    REFERENCES `mydb`.`Adres` (`adresID`),
   CONSTRAINT `fk_Bedrijf_Klant1`
     FOREIGN KEY (`b_klantID`)
-    REFERENCES `goDutch`.`klant` (`klantID`))
+    REFERENCES `mydb`.`klant` (`klantID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Contract`
+-- Table `mydb`.`Contract`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Contracten` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Contract` (
   `contractNummer` INT NOT NULL AUTO_INCREMENT,
   `datum` VARCHAR(45) NOT NULL,
   `c_klantID` INT NOT NULL,
@@ -79,15 +83,15 @@ CREATE TABLE IF NOT EXISTS `goDutch`.`Contracten` (
   UNIQUE INDEX `ContractNummer_UNIQUE` (`contractNummer` ASC) VISIBLE,
   CONSTRAINT `fk_Contracten_Klant1`
     FOREIGN KEY (`c_klantID`)
-    REFERENCES `goDutch`.`klant` (`klantID`))
+    REFERENCES `mydb`.`klant` (`klantID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Vestiging`
+-- Table `mydb`.`Vestiging`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Vestigingen` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Vestiging` (
   `vestegingsID` INT NOT NULL AUTO_INCREMENT,
   `vestegingsnaam` VARCHAR(45) NOT NULL,
   `v_adresID` INT NOT NULL,
@@ -96,37 +100,37 @@ CREATE TABLE IF NOT EXISTS `goDutch`.`Vestigingen` (
   UNIQUE INDEX `VestegingsID_UNIQUE` (`vestegingsID` ASC) VISIBLE,
   CONSTRAINT `fk_Vesteging_Adres1`
     FOREIGN KEY (`v_adresID`)
-    REFERENCES `goDutch`.`Adres` (`adresID`))
+    REFERENCES `mydb`.`Adres` (`adresID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Fiets`
+-- Table `mydb`.`Fiets`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Fietsen` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Fiets` (
   `fietsnummer` INT NOT NULL AUTO_INCREMENT,
-  `merk` VARCHAR(45) NOT NULL,
+  `Merk` VARCHAR(45) NOT NULL,
   `model` VARCHAR(45) NOT NULL,
   `fietstype` VARCHAR(45) NOT NULL,
   `elektrisch` VARCHAR(15) NOT NULL,
   `dagprijs` FLOAT NOT NULL,
-  `aankoopdatum` DATE NOT NULL,
-  `f_vestigingsID` INT NOT NULL,
+  `Aankoopdatum` DATE NOT NULL,
+  `f_vestegingsID` INT NOT NULL,
   PRIMARY KEY (`fietsnummer`),
-  INDEX `fk_Fiets_Vesteging1_idx` (`f_vestigingsID` ASC) VISIBLE,
+  INDEX `fk_Fiets_Vesteging1_idx` (`f_vestegingsID` ASC) VISIBLE,
   UNIQUE INDEX `fietsnummer_UNIQUE` (`fietsnummer` ASC) VISIBLE,
-  CONSTRAINT `fk_Fiets_Vestiging1`
-    FOREIGN KEY (`f_vestigingsID`)
-    REFERENCES `goDutch`.`Vestiging` (`vestigingsID`))
+  CONSTRAINT `fk_Fiets_Vesteging1`
+    FOREIGN KEY (`f_vestegingsID`)
+    REFERENCES `mydb`.`Vestiging` (`vestegingsID`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
  
 -- -----------------------------------------------------
--- Table `goDutch`.`Huur`
+-- Table `mydb`.`Huur`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `goDutch`.`Huren` (
+CREATE TABLE IF NOT EXISTS `mydb`.`Huur` (
   `Contracten_ContractNummer` INT NOT NULL,
   `Fiets_Fietsnummer` INT NOT NULL,
   `startdatum` DATE NOT NULL,
@@ -138,10 +142,10 @@ CREATE TABLE IF NOT EXISTS `goDutch`.`Huren` (
   INDEX `huurperiode` (`startdatum` ASC, `inleverdatum` ASC) INVISIBLE,
   CONSTRAINT `fk_contractNummer`
     FOREIGN KEY (`Contracten_ContractNummer`)
-    REFERENCES `goDutch`.`Contract` (`contractNummer`),
+    REFERENCES `mydb`.`Contract` (`contractNummer`),
   CONSTRAINT `fk_fietsNummer`
     FOREIGN KEY (`Fiets_Fietsnummer`)
-    REFERENCES `goDutch`.`Fiets` (`fietsnummer`))
+    REFERENCES `mydb`.`Fiets` (`fietsnummer`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
  
