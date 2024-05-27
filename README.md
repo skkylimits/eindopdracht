@@ -176,3 +176,6 @@ Specifieke opdracht voor Cyber Security
 - wat is type heren dames etc
 - wat is elektrisch
 - wat is vestigingid
+
+
+TODO: update alleen als de waarde leeg is functie 2
