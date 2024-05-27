@@ -157,6 +157,8 @@ def verwijderen_klant(klantnummer):
     #############################
     # Verwijder klant uit de db #
     #############################
+
+    ## Definieer de delete-query voor het verwijderen van de klant met het opgegeven klantnummer
     mycursor = mydb.cursor()
     delete_query_klant = f"DELETE FROM Klant WHERE klantID = '{klantnummer}';"
     
@@ -164,6 +166,7 @@ def verwijderen_klant(klantnummer):
     mycursor.execute(delete_query_klant)
     mydb.commit()
 
+    # Definieer de delete-query voor het verwijderen van het adres van de klant met het opgegeven klantnummer
     mycursor = mydb.cursor()
     delete_query_klant_adres = f"DELETE FROM Adres WHERE adresID = '{klantnummer}';"
     
@@ -171,7 +174,8 @@ def verwijderen_klant(klantnummer):
     mycursor.execute(delete_query_klant_adres)
     mydb.commit()
 
-    
+    # Meld dat een nieuwe klant succesvol is verwijderd.
+    print(f"\nKlant succesvol verwijderd!")
 
 def zoeken_klant():
     #############################
@@ -193,26 +197,32 @@ def zoeken_klant():
             
         # Haal alle overeenkomende records op
         klanten_db = mycursor.fetchall()
-            
+
+        # Controleer of klanten_db niet leeg is
         if klanten_db:
+            # Itereer over elk element (klant) in klanten_db
             for klant_db in klanten_db:
+                # Druk het klant ID af
                 print("Klant ID:", klant_db[0])
-                print("Naam:", klant_db[1])
+                # Druk de gevonden naam af
+                print("Voornaam:", klant_db[1])
+                print("Tussenvoegsel:", klant_db[2])
                 print("Achternaam:", klant_db[3])
-                # Je kunt andere klantgegevens afdrukken zoals nodig
         else:
+            # Als er geen klanten gevonden zijn, druk dan een passend bericht af
             print(f"Geen klant gevonden met de naam {deel_achternaam}")
     
     except mysql.connector.Error as error:
+        # Druk een foutmelding af als er een fout optreedt bij het verbinden met MySQL
         print("Fout bij het verbinden met MySQL:", error)
             
 def toevoegen_fiets():
     merk = input("Voer merk in: ")
     model = input("Voer model in: ")
     fietstype = input("Voer de fietstype in: ")
-    elektrisch = input("Is de fiets elektrisch? True/False: ")
-    dagprijs = input("Voer de dagprijs in: ")
-    aankoopdatum = input("Voer de aankoopdatum in yyyy-mm-dd: ")
+    elektrisch = input("Is de fiets elektrisch? [True | False]: ")
+    dagprijs = input("Voer de dagprijs in hele nummers [12.0]: ")
+    aankoopdatum = input("Voer de aankoopdatum in [yyyy-mm-dd]: ")
     vestigingsid = input("Voer de vestigingsid in: ")
 
     ############################
