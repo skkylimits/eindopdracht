@@ -158,23 +158,21 @@ def verwijderen_klant(klantnummer):
     # Verwijder klant uit de db #
     #############################
 
-    ## Definieer de delete-query voor het verwijderen van de klant met het opgegeven klantnummer
-    mycursor = mydb.cursor()
-    delete_query_klant = f"DELETE FROM Klant WHERE klantID = '{klantnummer}';"
-    
-    # Voer de query uit
-    mycursor.execute(delete_query_klant)
+    # Definieer de delete-query voor het verwijderen van de klant met het opgegeven klantnummer
+    delete_query_klant = "DELETE FROM Klant WHERE klantID = %s;"
+
+    # Voer de query uit geef de waarde van klantnummer door als een tuple (klantnummer,) door de comma
+    mycursor.execute(delete_query_klant, (klantnummer,))
     mydb.commit()
 
     # Definieer de delete-query voor het verwijderen van het adres van de klant met het opgegeven klantnummer
-    mycursor = mydb.cursor()
-    delete_query_klant_adres = f"DELETE FROM Adres WHERE adresID = '{klantnummer}';"
-    
-    # Voer de query uit
-    mycursor.execute(delete_query_klant_adres)
+    delete_query_klant_adres = "DELETE FROM Adres WHERE adresID = %s;"
+
+    # Voer de query uit geef de waarde van klantnummer door als een tuple (klantnummer,) door de comma
+    mycursor.execute(delete_query_klant_adres, (klantnummer,))
     mydb.commit()
 
-    # Meld dat een nieuwe klant succesvol is verwijderd.
+    # Meld dat een nieuwe klant succesvol is verwijderd
     print(f"\nKlant succesvol verwijderd!")
 
 def zoeken_klant():
@@ -239,113 +237,46 @@ def toevoegen_fiets():
         # Voer de eerste query uit om de klantgegevens in te voegen
         mycursor.execute(insert_fiets_query)
 
-        # Voer de tweede query uit om de adresgegevens in te voegen
-
         # Bevestig de transactie om de wijzigingen in de database permanent te maken
         mydb.commit()
 
+        # Meld dat een nieuwe klant succesvol is verwijderd
         print(f"Nieuwe fiets succesvol toegevoegd aan de database!")
     except Exception as e:
         # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
         print("Er is een fout opgetreden bij het toevoegen van de fiets:", e)
         mydb.rollback()
 
+def toevoegen_contract(klantnummer, vestigingsid):
+     # Vraag gebruiker input
+    fietsnummer = input('Voer fietsnummer in? ')
+    # startdatum = input('Wat is de gewenste ingangsdatum? [yyyy-mm-dd] ')
+    # inleverdatum = input('Wat is de gewenste inleverdatum? [yyyy-mm-dd] ')
 
-def selecteer_fietsen(startdatum, inleverdatum):
-    fietskeuze = input("Welke fiets wilt u huren? (bijv. 2 heren elektrisch, 2 dames niet-elektrisch): ")
-    fietskeuze = fietskeuze.split(", ")
-    gekozen_fietsen = []    
-    for keuze in fietskeuze:
-        if " " not in keuze:
-            print("Dit is geen geldige keuze, probeer het opnieuw")
-            continue
-        aantal, type, elektrisch = keuze.split(" ")
-        elektrisch = elektrisch.lower() == "elektrisch"
-        # geeft lijst met types en elektrisch of niet elektrisch
-        gekozen_fietsen.append((type, aantal, elektrisch))
-    return gekozen_fietsen
-
-def voeg_fietsen_toe_aan_contract(vestegingsid, gekozen_fietsen, datum_string, inleverdatum_string):
-    beschikbare_fietsen = []
-    vestegingsid = input("In welke vesteging wilt u het contract opstellen? Centraal station/ WTC / NDSM-werf: ")
-    if gekozen_fietsen[0][2] == True:
-        elektrisch = 'Ja'
-        print('elektrisch ja')
-    else:
-        elektrisch = 'Nee'
-        print('elektrisch ja')
-
-    # convert tuple to list
-    type_fietsen = gekozen_fietsen[0]
-    type_fietsen_list = list(type_fietsen)
-
-    print(type_fietsen_list[0])
-    print(elektrisch)
-    print(datum_string)
-    print(inleverdatum_string)
-    print(vestegingsid)
-
-    query = f"SELECT * FROM Fiets JOIN Huur ON Fiets.fietsnummer = Huur.Fiets_Fietsnummer WHERE fietstype = '{type_fietsen_list[0]}' AND elektrisch = '{elektrisch}' AND Fiets_Fietsnummer NOT IN (SELECT Fiets_Fietsnummer FROM Huur WHERE '{datum_string}' BETWEEN startdatum AND inleverdatum OR '{inleverdatum_string}' BETWEEN startdatum AND inleverdatum) AND f_vestigingsID = {vestegingsid};"
-    
-    mycursor.execute(query)
-    result = mycursor.fetchall()
-    print(result)
-
-def toevoegen_contract(klantnummer, vestigingsnaam):
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
-    # Voeg eerst het adres toe aan de adresstabel        
-    huur_query = f"INSERT INTO Contract (datum, c_klantID) VALUES ('2024-05-17', '2')"       
-    mycursor.execute(huur_query)         
+    # Voeg eerst de huur data toe aan de huurtabel        
+    huur_query = f"INSERT INTO Contract (datum, c_klantID) VALUES ('2024-05-17', {klantnummer})"  
 
+    # Voer de query uit
+    mycursor.execute(huur_query)         
     mydb.commit()         
 
-    # Haal het gegenereerde adres-ID op        
+    # Haal het gegenereerde huur-ID op        
     mycursor.execute("SELECT LAST_INSERT_ID()")         
     contract_id = mycursor.fetchone()[0]  
 
-    # Voeg vervolgens de klant toe met het juiste adres-ID        
-    klant_query = f"INSERT INTO Huur (Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES ({contract_id}, '5', '2000-01-02', '2000-02-03')"       
+    # Voeg vervolgens het contract toe met het juiste huur-ID        
+    klant_query = f"INSERT INTO Huur (Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES ({contract_id}, {fietsnummer}, '2000-01-02', '2000-02-03')"       
+    
+    # Voer query uit
     mycursor.execute(klant_query)         
     mydb.commit()
 
+    #  Meld dat een nieuwe klant succesvol is verwijderd
+    print(f"\nNieuw contract succesvol toegevoegd aan de database!")
     
-def toevoegen_contract2(klantnummer, vestigingsnaam):
-    print("Contract Opstellen")
-    klantnummer = klantnummer
-    vestigingsnaam = vestigingsnaam
-    startdatum = input("Voer de startdatum in.. ")
-    inleverdatum = input("Voer de inleverdatum in.. ")
-
-    ###############################
-    # Voeg contract toe aan de db #
-    ###############################
-
-    # Definieer de SQL-query's met behulp van f-strings
-    insert_contract_query = f"INSERT INTO Contracten (idKlanten, Vestiginsnaam, Startdatum, Inleverdatum) VALUES ('{klantnummer}', '{vestigingsnaam}', '{startdatum}', '{inleverdatum}')"
-
-    # Maak een cursor object om SQL-query's uit te voeren
-    mycursor = mydb.cursor()
-
-    try:
-        # Voer de eerste query uit om de klantgegevens in te voegen
-        mycursor.execute(insert_contract_query)
-
-        # Voer de tweede query uit om de adresgegevens in te voegen
-
-        # Bevestig de transactie om de wijzigingen in de database permanent te maken
-        mydb.commit()
-
-        print(f"Nieuwe contract succesvol toegevoegd aan de database!")
-    except Exception as e:
-        # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
-        print("Er is een fout opgetreden bij het toevoegen van de contract:", e)
-        mydb.rollback()
-
-    # Als je wilt controleren of de klant correct is toegevoegd, kun je bijvoorbeeld de ID van de laatst toegevoegde rij afdrukken
-    print("Contract toegevoegd aan de database met ID van de laatst toegevoegde contract:", mycursor.lastrowid)
-
 def toon_contract(contractnummer):
     width_langste_woord = 10  # De breedte van de breedste term, rekening houdend met "Vestiging:"
     contractnummer = contractnummer
@@ -353,6 +284,81 @@ def toon_contract(contractnummer):
     #############################################
     # Stel contract op met informatie uit de DB #
     #############################################
+
+    # Define the SQL query to select all data from the klant table in the mydb database
+    fetch_query = """
+        SELECT 
+            Contract.contractNummer,
+            Contract.datum,
+            Klant.voornaam, 
+            Klant.tussenvoegsel,
+            Klant.achternaam,
+            Adres.straat,
+            Adres.huisnummer,
+            Adres.postcode,
+            Adres.plaats,
+            Fiets.fietsnummer,
+            Fiets.merk,
+            Fiets.model,
+            Fiets.fietstype,
+            Fiets.elektrisch,
+            Huur.startdatum, 
+            Huur.inleverdatum,
+            (DATEDIFF(Huur.inleverdatum, Huur.startdatum)) AS aantal_verhuurde_dagen,
+            Fiets.dagprijs,
+            (DATEDIFF(Huur.inleverdatum, Huur.startdatum) * Fiets.dagprijs) AS totale_huurprijs,
+            (SELECT COUNT(*) FROM Contract) AS aantal_fietsen
+        FROM 
+            Contract
+        LEFT JOIN 
+            klant ON Contract.c_klantID = klant.klantID
+        LEFT JOIN 
+            Adres ON Adres.AdresID = klant.klantID
+        LEFT JOIN 
+            Huur ON Contract.contractNummer = Huur.Contracten_ContractNummer
+        LEFT JOIN 
+            Fiets ON Huur.Fiets_Fietsnummer = Fiets.fietsnummer
+        WHERE 
+            Klant.klantID = '2'
+    """
+
+    # Create a cursor object to execute SQL queries
+    mycursor = mydb.cursor()
+
+    # Execute the SQL query
+    mycursor.execute(fetch_query)
+
+    # Fetch all the results from the executed query
+    result = mycursor.fetchall()
+
+    print(result[5])
+
+    contractnummer = result[5][0]
+    klantnummer = result[5][0]
+    voornaam = result[5][2]
+    tussenvoegsel = result[5][3]
+    achternaam = result[5][4]
+   
+    straat = result[5][5]
+    huisnummer = result[5][6]
+    postcode = result[5][7]
+    plaats = result[5][8]
+
+    fietsnummer = result[5][9]
+    merk = result[5][10]
+    model = result[5][11]
+    fietstype = result[5][12]
+    elektrisch = result[5][13]
+
+    startdatum = result[5][14]
+
+    inleverdatum = result[5][15]
+
+    aantal_verhuurde_dagen = result[5][16]
+    dagprijs = result[5][17]
+    totale_huurprijs = result[5][18]
+    aantal_fietsen = result[5][19]
+
 
     #############################
     #           LOGO            #
@@ -375,56 +381,28 @@ def toon_contract(contractnummer):
     print(f"Contractnr: {str(contractnummer):<{width_langste_woord}}", end="\t")
     print(f"Datum: {str(date_today_str):<{width_langste_woord}}", end="\n")
     
-    #################################
-    #           VESTIGING           #
-    #################################
-    print(f"{'':<{width_langste_woord}}")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
-    print(f"Vestiging: {locatie_informatie[1]:<{width_langste_woord}}", end="\t")
-    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
-
-    # Lengte van de kolommen
-    kolom_breedte = 11
-
-    # Adresgegevens
-    print(f"{'':<{kolom_breedte}}{locatie_informatie[2]}")
-    print(f"{'':<{kolom_breedte}}{locatie_informatie[3]}")
 
     #############################
     #           KLANT           #
     #############################
     print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
-    print(f"Klant: {str(klant_informatie[1]):<{3}}, {str(klant_informatie[2])} (klantnr {klant_informatie[0]})")
+    print(f"Klant: {str(voornaam):<{2}}, {str(tussenvoegsel)} {str(achternaam)} (klantnr {klantnummer})")
     # Adresgegevens
 
     # Lengte van de kolommen
     kolom_breedte = 7
 
     # Header
-    print(f"{'Adres:':<{kolom_breedte}}{klant_informatie[3]}")
-    print(f"{'':<{kolom_breedte}}{klant_informatie[4]} {klant_informatie[5]}")
+    print(f"{'Adres:':<{kolom_breedte}}{straat} {huisnummer}")
+    print(f"{'':<{kolom_breedte}}{postcode} {plaats}")
 
     #############################
     #           DATUM           #
     #############################
 
-    # Converteer de gebruikersinvoer naar datetime objecten
-    startdatum = datetime.strptime(contract_info[3], "%Y-%m-%d")
-    inleverdatum = datetime.strptime(contract_info[4], "%Y-%m-%d")
-
-    # Verschil berekenen
-    verschil = inleverdatum - startdatum
- 
-    '''
-    verschil.days is een attribuut van het verschil tussen twee datetime-objecten. 
-    In dit geval wordt verschil berekend door inleverdatum - startdatum. Dit geeft een timedelta-object terug.
-    Wat het verschil aangeeft tussen de twee datums in dagen. verschil.minutes doet dit voor minuten enz.
-    '''
-    aantal_dagen = verschil.days
- 
-
     print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
-    print(f"Stardatum: {str(contract_info[3]):<{width_langste_woord}}")
-    print(f"Inleverdatum: {str(contract_info[4]):<{width_langste_woord}} --> aantal dagen: {aantal_dagen}", end="\n")
+    print(f"Stardatum: {str(startdatum):<{width_langste_woord}}")
+    print(f"Inleverdatum: {str(inleverdatum):<{width_langste_woord}} --> aantal dagen: {aantal_verhuurde_dagen}", end="\n")
     print("")
 
     print(f'-----------------------------------------------------------------------------------', end="\n")
@@ -434,20 +412,14 @@ def toon_contract(contractnummer):
     #############################  
     print("")
     print("FIETSEN:")
-    print("")
-
-    # Gegevens
-    gehuurde_fietsen = 3
-    prijs_per_dag = 25
+    print("") 
 
     # Header
     print(f"{'Fietsnr':<15} {'Type':<15} {'Model':<15} {'Elektrisch':<15} {'Prijs Per Dag':<15}")
 
-    # Gegevens voor elke dag
-    for dag in range(1, 4):
-        totaalbedrag = dag * prijs_per_dag
-        print(f"{dag:<15} {prijs_per_dag:<15} {totaalbedrag:<15} {totaalbedrag:^15} {totaalbedrag:>15}")
-    
+    for fiets in result:
+        print(f"{fiets[0]:<15} {fiets[0]:<15} {fiets[0]:<15} {fiets[0]:^15} {fiets[0]:>15}")
+
     print("")
     print(f'-----------------------------------------------------------------------------------', end="\n")
     
@@ -458,18 +430,17 @@ def toon_contract(contractnummer):
     print("TOTAAL:")
     print("")
 
-   # Gegevens
-    prijs_per_dag = 25
-
     # Header
     print(f"{'Aantal dagen':>15} {'Prijs per dag':>15} {'Totaalbedrag':>15}")
 
     # Gegevens voor elke dag
-    for dag in range(1, 2):
-        totaalbedrag = dag * prijs_per_dag
-        print(f"{aantal_dagen:>15} {prijs_per_dag:>15} {totaalbedrag:>15}")
+    for _ in range(1, 2):
+        prijs_per_dag = aantal_fietsen * dagprijs
+        totaalbedrag = aantal_fietsen * (aantal_verhuurde_dagen * dagprijs)
+        print(f"{aantal_verhuurde_dagen:>15} {prijs_per_dag:>15} {totaalbedrag:>15}")
 
 def toon_alle_gegevens():
+    ## gebruik join group by, view
     #####################################
     # Voeg klant gegevens toe aan de db #
     #####################################
