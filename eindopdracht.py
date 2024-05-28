@@ -126,7 +126,7 @@ def wijzigen_klant():
     # Wijzig klantgegevens db #
     ###########################
 
-    # Maak een cursor object om SQL-query's uit te voeren
+    # Stap 0: Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
     # Stap 1: Haal het adres ID op dat bij de klant hoort
@@ -138,32 +138,34 @@ def wijzigen_klant():
     # Step 2: Update de klant
     update_klant_query = """
     UPDATE Klant 
-    SET voornaam = %s, 
-        tussenvoegsel = %s, 
-        achternaam = %s,
-        bankrekeningnummer = %s 
+    SET voornaam = CASE WHEN %s != '' THEN %s ELSE voornaam END, 
+        tussenvoegsel = CASE WHEN %s != '' THEN %s ELSE tussenvoegsel END, 
+        achternaam = CASE WHEN %s != '' THEN %s ELSE achternaam END,
+        bankrekeningnummer = CASE WHEN %s != '' THEN %s ELSE bankrekeningnummer END 
     WHERE klantID = %s
     """
-    klant_data = (nieuwe_voornaam, nieuwe_tussenvoegsel, nieuwe_achternaam, nieuw_bankrekeningnummer, klantnummer)
+
+    klant_data = (nieuwe_voornaam, nieuwe_voornaam, nieuwe_tussenvoegsel, nieuwe_tussenvoegsel, nieuwe_achternaam, nieuwe_achternaam, nieuw_bankrekeningnummer, nieuw_bankrekeningnummer, klantnummer)
     mycursor.execute(update_klant_query, klant_data)
         
     # Step 3: Update het Adres
     update_address_query = """
     UPDATE Adres 
-    SET postcode = %s, 
-        huisnummer = %s, 
-        straat = %s,
-        plaats = %s,
-        catagorie = %s 
+    SET postcode = CASE WHEN %s != '' THEN %s ELSE postcode END, 
+        huisnummer = CASE WHEN %s != '' THEN %s ELSE huisnummer END, 
+        straat = CASE WHEN %s != '' THEN %s ELSE straat END,
+        plaats = CASE WHEN %s != '' THEN %s ELSE plaats END,
+        catagorie = CASE WHEN %s != '' THEN %s ELSE catagorie END 
     WHERE AdresID = %s
     """
-    address_data = (nieuwe_postcode, nieuwe_huisnummer, nieuwe_straat, nieuwe_plaats, nieuwe_catagorie, adres_id)
+
+    address_data = (nieuwe_postcode, nieuwe_postcode, nieuwe_huisnummer, nieuwe_huisnummer, nieuwe_straat, nieuwe_straat, nieuwe_plaats, nieuwe_plaats, nieuwe_catagorie, nieuwe_catagorie, adres_id)
     mycursor.execute(update_address_query, address_data)
         
-    # Commit de transactie
+    # Stap 4: Commit de transactie
     mydb.commit()
 
-    # Sluit de cursor en de verbinding
+    # Stap 5: Sluit de cursor en de verbinding
     mycursor.close()
 
     # Meld dat een nieuwe klant succesvol is toegevoegd.

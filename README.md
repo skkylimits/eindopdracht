@@ -179,3 +179,9 @@ TODO: update alleen als de waarde leeg is functie 2
 1 = vestiging
 2 = klant
 3 = bedrijf
+
+Errors:
+
+- Teveel fiets niet gevraagd fietsen geinsert
+- Python update ook lege velden naar de database toe in functie 2
+- functie 7 geschreven op basis van klant ipv contract
