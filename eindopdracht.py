@@ -313,8 +313,9 @@ def toevoegen_contract(klantnummer, vestigingsid):
     
 def toon_contract(contractnummer):
     width_langste_woord = 10  # De breedte van de breedste term, rekening houdend met "Vestiging:"
-    contractnummer = contractnummer
-  
+    # contractnummer = contractnummer
+    klantnummer = contractnummer
+
     #############################################
     # Stel contract op met informatie uit de DB #
     #############################################
@@ -365,34 +366,46 @@ def toon_contract(contractnummer):
     # Fetch all the results from the executed query
     result = mycursor.fetchall()
 
-    print(result[5])
+    # Zet data om in variabele
 
-    contractnummer = result[5][0]
-    klantnummer = result[5][0]
-    voornaam = result[5][2]
-    tussenvoegsel = result[5][3]
-    achternaam = result[5][4]
-   
-    straat = result[5][5]
-    huisnummer = result[5][6]
-    postcode = result[5][7]
-    plaats = result[5][8]
+    contractnummer = result[0][0]
+    # klantnummer = result[0][1]
+    voornaam = result[0][2]
+    tussenvoegsel = result[0][3]
+    achternaam = result[0][4]
 
-    fietsnummer = result[5][9]
-    merk = result[5][10]
-    model = result[5][11]
-    fietstype = result[5][12]
-    elektrisch = result[5][13]
+    straat = result[0][5]
+    huisnummer = result[0][6]
+    postcode = result[0][7]
+    plaats = result[0][8]
 
-    startdatum = result[5][14]
+    fietsnummer = result[0][9]
+    merk = result[0][10]
+    model = result[0][11]
+    fietstype = result[0][12]
+    elektrisch = result[0][13]
 
-    inleverdatum = result[5][15]
+    startdatum = result[0][14]
+    inleverdatum = result[0][15]
 
-    aantal_verhuurde_dagen = result[5][16]
-    dagprijs = result[5][17]
-    totale_huurprijs = result[5][18]
-    aantal_fietsen = result[5][19]
+    aantal_verhuurde_dagen = result[0][16]
+    dagprijs = result[0][17]
+    totale_huurprijs = result[0][18]
+    aantal_fietsen = result[0][19]
 
+    #################################
+    #           VESTIGING           #
+    #################################
+    print(f"{'':<{width_langste_woord}}")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Vestiging: {locatie_informatie[1]:<{width_langste_woord}}", end="\t")
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+
+    # Lengte van de kolommen
+    kolom_breedte = 11
+
+    # Adresgegevens
+    print(f"{'':<{kolom_breedte}}{locatie_informatie[2]}")
+    print(f"{'':<{kolom_breedte}}{locatie_informatie[3]}")
 
     #############################
     #           LOGO            #
@@ -452,7 +465,7 @@ def toon_contract(contractnummer):
     print(f"{'Fietsnr':<15} {'Type':<15} {'Model':<15} {'Elektrisch':<15} {'Prijs Per Dag':<15}")
 
     for fiets in result:
-        print(f"{fiets[0]:<15} {fiets[0]:<15} {fiets[0]:<15} {fiets[0]:^15} {fiets[0]:>15}")
+        print(f"{fiets[9]:<15} {fiets[12]:<15} {fiets[11]:<15} {fiets[13]:^15} {fiets[17]:>15}")
 
     print("")
     print(f'-----------------------------------------------------------------------------------', end="\n")
@@ -464,14 +477,22 @@ def toon_contract(contractnummer):
     print("TOTAAL:")
     print("")
 
+    # Maak een lege lijst om de waarden van fiets[17] op te slaan
+    dagprijs_per_fiets = []
+
+    # Itereer over de resultaten en voeg de waarden van fiets[17] toe aan de lijst
+    for fiets in result:
+        dagprijs_per_fiets.append(fiets[17])
+
     # Header
     print(f"{'Aantal dagen':>15} {'Prijs per dag':>15} {'Totaalbedrag':>15}")
 
     # Gegevens voor elke dag
     for _ in range(1, 2):
-        prijs_per_dag = aantal_fietsen * dagprijs
-        totaalbedrag = aantal_fietsen * (aantal_verhuurde_dagen * dagprijs)
+        prijs_per_dag = sum(dagprijs_per_fiets)
+        totaalbedrag = aantal_verhuurde_dagen * prijs_per_dag
         print(f"{aantal_verhuurde_dagen:>15} {prijs_per_dag:>15} {totaalbedrag:>15}")
+  
 
 def toon_alle_gegevens():
     ## gebruik join group by, view
