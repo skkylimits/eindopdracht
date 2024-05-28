@@ -534,26 +534,138 @@ def toon_contract(klantnummer):
   
 
 def toon_alle_gegevens():
-    ## gebruik join group by, view
     #####################################
     # Voeg klant gegevens toe aan de db #
     #####################################
 
-    # Define the SQL query to select all data from the "sporthal" table in the "Basketbal" database
-    fetch_query = 'SELECT * FROM Klant'
+    ###############
+    # Vestigingen #
+    ###############
+    print('\n')
+    print("+--------------------------------+")
+    print("|                                |")
+    print("|            Vestigingen         |")
+    print("|                                |")
+    print("+--------------------------------+")
+    
 
-    # Create a cursor object to execute SQL queries
+    # Definieer de SQL-query om alle gegevens uit de "klant" tabel in de "Basketbal" database te selecteren
+    fetch_query = 'SELECT * FROM Vestiging'
+
+    # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
-    # Execute the SQL query
+    # Voer de SQL-query uit
     mycursor.execute(fetch_query)
 
-    # Fetch all the results from the executed query
+    # Haal alle resultaten op uit de uitgevoerde query
     result = mycursor.fetchall()
 
-    # Iterate over the results and print each row
+    # Itereer over de resultaten en print elke rij
     for db_klanten in result:
         print(db_klanten)
+    
+    print('\n')
+    
+    ###########
+    # Fietsen #
+    ###########
+
+    print("+------------------------------+")
+    print("|                              |")
+    print("|            Fietsen           |")
+    print("|                              |")
+    print("+------------------------------+")
+    
+    # Definieer de SQL-query om alle gegevens uit de "klant" tabel in de "Basketbal" database te selecteren
+    fetch_query = 'SELECT * FROM Fiets ORDER BY Aankoopdatum'
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    # Voer de SQL-query uit
+    mycursor.execute(fetch_query)
+
+    # Haal alle resultaten op uit de uitgevoerde query
+    result = mycursor.fetchall()
+
+    # Itereer over de resultaten en print elke rij
+    for db_klanten in result:
+        print(db_klanten)
+    
+    print('\n')   
+
+    #########
+    # Klant #
+    #########
+
+    print("+------------------------------+")
+    print("|                              |")
+    print("|            Klanten           |")
+    print("|                              |")
+    print("+------------------------------+")
+
+    # Definieer de SQL-query om alle gegevens uit de "klant" tabel in de "Basketbal" database te selecteren
+    fetch_query = 'SELECT * FROM Klant ORDER BY achternaam;'
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    # Voer de SQL-query uit
+    mycursor.execute(fetch_query)
+
+    # Haal alle resultaten op uit de uitgevoerde query
+    result = mycursor.fetchall()
+
+    # Itereer over de resultaten en print elke rij
+    for db_klanten in result:
+        print(db_klanten)
+        
+    print('\n')
+
+    ############
+    # Contract #
+    ############
+
+    print("+---------------------------------+")
+    print("|                                 |")
+    print("|            CONTRACTEN           |")
+    print("|                                 |")
+    print("+---------------------------------+")
+
+    # Definieer de SQL-query om alle gegevens uit de "klant" tabel in de "Basketbal" database te selecteren
+    fetch_query = """
+        SELECT 
+            Contract.contractNummer,
+            Contract.datum,
+            Huur.startdatum, 
+            Huur.inleverdatum,
+            (DATEDIFF(Huur.inleverdatum, Huur.startdatum) * Fiets.dagprijs) AS totale_huurprijs
+        FROM 
+            Contract
+        LEFT JOIN 
+            Klant ON Contract.c_klantID = Klant.klantID
+        LEFT JOIN 
+            Huur ON Contract.contractNummer = Huur.Contracten_ContractNummer
+        LEFT JOIN 
+            Fiets ON Huur.Fiets_Fietsnummer = Fiets.fietsnummer
+        """
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    # Voer de SQL-query uit
+    mycursor.execute(fetch_query)
+
+    # Haal alle resultaten op uit de uitgevoerde query
+    result = mycursor.fetchall()
+
+    # Itereer over de resultaten en print elke rij
+    for db_klanten in result:
+        print(db_klanten)
+        
+    print('\n')
+   
 
 #############################
 #           Program         #
