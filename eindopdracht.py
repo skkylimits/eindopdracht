@@ -302,7 +302,7 @@ def toevoegen_contract(klantnummer, vestigingsid):
     contract_id = mycursor.fetchone()[0]  
 
     # Voeg vervolgens het contract toe met het juiste huur-ID        
-    klant_query = f"INSERT INTO Huur (Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES ({contract_id}, {fietsnummer}, '{startdatum}', '{inleverdatum})"       
+    klant_query = f"INSERT INTO Huur (Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES ({contract_id}, {fietsnummer}, '{startdatum}', '{inleverdatum}')"
     
     # Voer query uit
     mycursor.execute(klant_query)         
@@ -695,9 +695,9 @@ def main():
         elif choice == "5":
             toevoegen_fiets()
         elif choice == "6":
-            nummer = input("Voer uw klantnummer in.. ")
+            klantnummer = input("Voer uw klantnummer in.. ")
             vestigingsid = input("Voer het vestigingsid in.. ")
-            toevoegen_contract(nummer, vestigingsid)
+            toevoegen_contract(klantnummer, vestigingsid)
         elif choice == "7":
             klantnummer = int(input("Voer het klantnummer in dat moet worden getoond: "))
             toon_contract(klantnummer)
