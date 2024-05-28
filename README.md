@@ -179,7 +179,6 @@ Specifieke opdracht voor Cyber Security
 
 
 TODO: update alleen als de waarde leeg is functie 2
-TODO: delete bij tweede keer werkt niet
 TODO: maak database veilig met env inlogcodes niet zichtbaar
 
 1 = vestiging

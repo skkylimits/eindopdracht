@@ -1,30 +1,16 @@
 import mysql.connector
 from datetime import datetime
-from dotenv import load_dotenv
-import os
 
 #####################################
 #           DB Connection           #
 #####################################
-# Laad het .env-bestand
-load_dotenv()  
-
-# Haal het wachtwoord op uit een omgevingsvariabele
-db_pass = os.getenv("DB_PASS")
-
 mydb = mysql.connector.connect(
     host="127.0.0.1",
     user="root",
-    password=db_pass,
+    password="Inloggen01",
     database="mydb"
 )
 mycursor = mydb.cursor()
-
-# Controleer of de verbinding succesvol tot stand is gebracht
-if mydb.is_connected():
-    print("Database connected successfully")
-else:
-    print("Failed to connect to database")
 
 
 #################################
@@ -109,15 +95,6 @@ def toevoegen_klant():
 
 def wijzigen_klant():
     klantnummer = int(input("Voer het klantnummer in van de klant die u wilt bijwerken: "))
-    nieuwe_voornaam = input("Voer de nieuwe voornaam in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_tussenvoegsel = input("Voer de nieuwe tussenvoegsel in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_achternaam = input("Voer de nieuwe achternaam in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_straat = input("Voer het nieuwe adres in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_huisnummer = input("Voer het nieuwe huisnummer in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_postcode = input("Voer de nieuwe postcode in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_plaats = input("Voer de nieuwe plaats in (druk op Enter om de huidige waarde te behouden): ")
-    nieuwe_catagorie = input("Voer de nieuwe catagorie in (druk op Enter om de huidige waarde te behouden): ")
-    nieuw_bankrekeningnummer = input("Voer het nieuwe bankrekeningnummer in (druk op Enter om de huidige waarde te behouden): ")
 
     ###########################
     # Wijzig klantgegevens db #
@@ -126,42 +103,108 @@ def wijzigen_klant():
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
-    # Stap 1: Haal het adres ID op dat bij de klant hoort
-    fetch_query = "SELECT k_adresID FROM Klant WHERE klantID = %s"
-    mycursor.execute(fetch_query, (klantnummer ,))
-    result = mycursor.fetchone()
-    adres_id = result[0]
+    # Haal de oude waarden op uit de database voordat je de nieuwe invoer vraagt
+    query_select_klant = "SELECT voornaam, tussenvoegsel, achternaam, bankrekeningnummer FROM Klant WHERE klantID = %s"
+    
+    # Voer query uit
+    mycursor.execute(query_select_klant, (klantnummer,))
 
-    # Step 2: Update de klant
-    update_klant_query = """
-    UPDATE Klant 
-    SET voornaam = %s, 
-        tussenvoegsel = %s, 
-        achternaam = %s,
-        bankrekeningnummer = %s 
-    WHERE klantID = %s
+    # Haal de gegevens op van de klant met het opgegeven klantnummer
+    oude_klant_data = mycursor.fetchone()  
+
+    # Sla de oude waarden op in variabelen
+    oude_voornaam, oude_tussenvoegsel, oude_achternaam, oud_bankrekeningnummer = oude_klant_data
+
+    # Vraag de nieuwe invoer aan de gebruiker
+    nieuwe_voornaam = input("Voer de nieuwe voornaam in (druk op Enter om de huidige waarde te behouden): ")
+    nieuwe_tussenvoegsel = input("Voer de nieuwe tussenvoegsel in (druk op Enter om de huidige waarde te behouden): ")
+    nieuwe_achternaam = input("Voer de nieuwe achternaam in (druk op Enter om de huidige waarde te behouden): ")
+    nieuw_bankrekeningnummer = input("Voer het nieuwe bankrekeningnummer in (druk op Enter om de huidige waarde te behouden): ")
+
+    # Controleer of de nieuwe invoer leeg is en behoud indien nodig de oude waarden
+    if not nieuwe_voornaam:
+        nieuwe_voornaam = oude_voornaam
+
+    if not nieuwe_tussenvoegsel:
+        nieuwe_tussenvoegsel = oude_tussenvoegsel
+
+    if not nieuwe_achternaam:
+        nieuwe_achternaam = oude_achternaam
+
+    if not nieuw_bankrekeningnummer:
+        nieuw_bankrekeningnummer = oud_bankrekeningnummer
+
+    # Update de klantgegevens met de nieuwe waarden, waarbij het klantnummer overeenkomt.
+    query_klant = """
+        UPDATE Klant 
+        SET voornaam = %s, 
+            tussenvoegsel = %s, 
+            achternaam = %s, 
+            bankrekeningnummer = %s 
+        WHERE klantID = %s
     """
-    klant_data = (nieuwe_voornaam, nieuwe_tussenvoegsel, nieuwe_achternaam, nieuw_bankrekeningnummer, klantnummer)
-    mycursor.execute(update_klant_query, klant_data)
-        
-    # Step 3: Update het Adres
-    update_address_query = """
-    UPDATE Adres 
-    SET postcode = %s, 
-        huisnummer = %s, 
-        straat = %s,
-        plaats = %s,
-        catagorie = %s 
-    WHERE AdresID = %s
-    """
-    address_data = (nieuwe_postcode, nieuwe_huisnummer, nieuwe_straat, nieuwe_plaats, nieuwe_catagorie, adres_id)
-    mycursor.execute(update_address_query, address_data)
-        
-    # Commit de transactie
+
+    # Lijst voor de klant waarden
+    klant_values = [nieuwe_voornaam, nieuwe_tussenvoegsel, nieuwe_achternaam, nieuw_bankrekeningnummer, klantnummer]
+
+    # Voer de query uit
+    mycursor.execute(query_klant, klant_values)
     mydb.commit()
 
-    # Sluit de cursor en de verbinding
-    mycursor.close()
+    ###########################
+    # Wijzig adresgegevens db #
+    ###########################
+
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
+
+    # Haal de oude waarden op uit de database voordat je de nieuwe invoer vraagt
+    query_select_klant = "SELECT voornaam, tussenvoegsel, achternaam, bankrekeningnummer FROM Klant WHERE klantID = %s"
+    
+    # Voer query uit
+    mycursor.execute(query_select_klant, (klantnummer,))
+
+    # Haal de gegevens op van de klant met het opgegeven klantnummer
+    oude_klant_data = mycursor.fetchone()  
+
+    # Sla de oude waarden op in variabelen
+    oude_voornaam, oude_tussenvoegsel, oude_achternaam, oud_bankrekeningnummer = oude_klant_data
+
+    # Vraag de nieuwe invoer aan de gebruiker
+    nieuwe_voornaam = input("Voer de nieuwe voornaam in (druk op Enter om de huidige waarde te behouden): ")
+    nieuwe_tussenvoegsel = input("Voer de nieuwe tussenvoegsel in (druk op Enter om de huidige waarde te behouden): ")
+    nieuwe_achternaam = input("Voer de nieuwe achternaam in (druk op Enter om de huidige waarde te behouden): ")
+    nieuw_bankrekeningnummer = input("Voer het nieuwe bankrekeningnummer in (druk op Enter om de huidige waarde te behouden): ")
+
+    # Controleer of de nieuwe invoer leeg is en behoud indien nodig de oude waarden
+    if not nieuwe_voornaam:
+        nieuwe_voornaam = oude_voornaam
+
+    if not nieuwe_tussenvoegsel:
+        nieuwe_tussenvoegsel = oude_tussenvoegsel
+
+    if not nieuwe_achternaam:
+        nieuwe_achternaam = oude_achternaam
+
+    if not nieuw_bankrekeningnummer:
+        nieuw_bankrekeningnummer = oud_bankrekeningnummer
+
+    # Update de klantgegevens met de nieuwe waarden, waarbij het klantnummer overeenkomt.
+    query_klant = """
+        UPDATE Klant 
+        SET voornaam = %s, 
+            tussenvoegsel = %s, 
+            achternaam = %s, 
+            bankrekeningnummer = %s 
+        WHERE klantID = %s
+    """
+
+    # Lijst voor de klant waarden
+    klant_values = [nieuwe_voornaam, nieuwe_tussenvoegsel, nieuwe_achternaam, nieuw_bankrekeningnummer, klantnummer]
+
+    # Voer de query uit
+    mycursor.execute(query_klant, klant_values)
+    mydb.commit()
 
     # Meld dat een nieuwe klant succesvol is toegevoegd.
     print(f"\nKlantgegevens succesvol bijgewerkt!")
