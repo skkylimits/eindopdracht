@@ -1,10 +1,5 @@
 # Eindopdracht
 
-
-- [ ] fix functie met database 7 contracten heeft niet alle benodige tabellen, toon contract update gehuurde fietsen in lijst & maak het zodat er uit de database datagehaald wordt
-  
-- [ ] test programma
-
 ## Inleiding
 
 Deze eindopdracht voor de vakken Databases en Programming wordt uitgevoerd in tweetallen. 
@@ -180,8 +175,6 @@ TODO: update alleen als de waarde leeg is functie 2
 2 = klant
 3 = bedrijf
 
-Errors:
+TO FIX:
 
-- Teveel fiets niet gevraagd fietsen geinsert
-- Python update ook lege velden naar de database toe in functie 2
 - functie 7 geschreven op basis van klant ipv contract

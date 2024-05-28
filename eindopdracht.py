@@ -348,7 +348,7 @@ def toon_contract(klantnummer):
     # Fetch contracten #
     ####################
 
-    # Define the SQL query to select all data from the klant table in the mydb database
+    # Definieer de SQL-query om alle gegevens uit de klantentabel in de mydb-database te selecteren.
     fetch_query = f"""
         SELECT 
             Contract.contractNummer,
@@ -385,19 +385,16 @@ def toon_contract(klantnummer):
             Klant.klantID = '{klantnummer}'
     """
 
-    # Create a cursor object to execute SQL queries
+    # Maak een cursor object aan om SQL-query's uit te voeren.
     mycursor = mydb.cursor()
 
-    # Execute the SQL query
+    # Voer de SQL-query uit.
     mycursor.execute(fetch_query)
 
-    # Fetch all the results from the executed query
+    # Haal alle resultaten op van de uitgevoerde query.
     result = mycursor.fetchall()
 
-    # Zet data om in variabele
-
     contractnummer = result[0][0]
-    # klantnummer = result[0][1]
     voornaam = result[0][2]
     tussenvoegsel = result[0][3]
     achternaam = result[0][4]
@@ -407,19 +404,10 @@ def toon_contract(klantnummer):
     postcode = result[0][7]
     plaats = result[0][8]
 
-    fietsnummer = result[0][9]
-    merk = result[0][10]
-    model = result[0][11]
-    fietstype = result[0][12]
-    elektrisch = result[0][13]
-
     startdatum = result[0][14]
     inleverdatum = result[0][15]
 
     aantal_verhuurde_dagen = result[0][16]
-    dagprijs = result[0][17]
-    totale_huurprijs = result[0][18]
-    aantal_fietsen = result[0][19]
 
     ###################
     # Fetch vestiging #
@@ -437,7 +425,7 @@ def toon_contract(klantnummer):
         FROM 
             Vestiging
         LEFT JOIN 
-            Adres ON Adres.AdresID = vestiging.v_adresID -- Hier gebruik je k_adresID om het adres op te halen
+            Adres ON Adres.AdresID = vestiging.v_adresID
         WHERE 
             vestiging.v_adresID = '3'
     """
@@ -485,7 +473,7 @@ def toon_contract(klantnummer):
     #           CONTRACT            #
     #################################
     
-    # Get date today
+    # Krijg datum vandaag
     date_today =  datetime.today()
     date_today_str = date_today.strftime('%d-%m-%Y')
 
@@ -498,7 +486,6 @@ def toon_contract(klantnummer):
     #############################
     print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
     print(f"Klant: {str(voornaam):<{2}}, {str(tussenvoegsel)} {str(achternaam)} (klantnr {klantnummer})")
-    # Adresgegevens
 
     # Lengte van de kolommen
     kolom_breedte = 7
@@ -529,7 +516,7 @@ def toon_contract(klantnummer):
     print(f"{'Fietsnr':<15} {'Type':<15} {'Model':<15} {'Elektrisch':<15} {'Prijs Per Dag':<15}")
 
     for fiets in result:
-        print(f"{fiets[9]:<15} {fiets[12]:<15} {fiets[11]:<15} {fiets[13]:^15} {fiets[17]:>15}")
+        print(f"{fiets[9]:<15} {fiets[11]:<15} {fiets[12]:<15} {fiets[13]:^15} {fiets[17]:>15}")
 
     print("")
     print(f'-----------------------------------------------------------------------------------', end="\n")

@@ -39,27 +39,37 @@ VALUES ('WTC', @adres_id);
 
 -- Voeg fiets toe aan de fietstabel
 INSERT INTO Fiets (merk, model, fietstype, elektrisch, dagprijs, aankoopdatum, f_vestegingsID) VALUES
-('Gazelle', 'Ultimate', 'Herenfiets', 'False', '15.0', '2023-05-14', 1),
-('Batavus', 'Finez', 'Stadsfiets', 'True', '12.5', '2022-11-03', 2),
-('Sparta', 'Ion', 'Elektrische fiets', 'True', '20.0', '2021-07-22', 3),
-('Koga', 'F3', 'Hybride fiets', 'False', '18.0', '2023-09-11', 1),
-('Trek', 'Domane', 'Racefiets', 'False', '22.0', '2024-01-05', 2),
-('Giant', 'Explore', 'Mountainbike', 'True', '17.0', '2022-02-17', 3),
-('Cannondale', 'Quick', 'Gravelbike', 'False', '19.0', '2023-04-29', 1),
-('Cube', 'Kathmandu', 'Reisfiets', 'True', '21.0', '2024-03-08', 2),
-('Merida', 'Scultura', 'Racefiets', 'False', '23.0', '2022-06-20', 3),
-('Scott', 'Addict', 'Racefiets', 'True', '24.0', '2021-12-10', 1),
-('Specialized', 'Diverge', 'Gravelbike', 'False', '25.0', '2023-10-15', 2),
-('Santa Cruz', 'Hightower', 'Mountainbike', 'True', '26.0', '2024-02-22', 3),
-('BMC', 'Roadmachine', 'Racefiets', 'False', '27.0', '2021-09-18', 1),
-('Focus', 'Mares', 'Cyclocross', 'True', '28.0', '2023-11-07', 2),
-('Orbea', 'Gain', 'Elektrische fiets', 'True', '29.0', '2022-03-12', 3),
-('Riese & Muller', 'Superdelite', 'Elektrische fiets', 'True', '30.0', '2023-08-25', 1),
-('VanMoof', 'S3', 'Stadsfiets', 'True', '31.0', '2021-05-30', 2),
-('Liv', 'Langma', 'Racefiets', 'False', '32.0', '2024-04-10', 3),
-('Bianchi', 'Oltre', 'Racefiets', 'True', '33.0', '2022-01-19', 1),
-('Pinarello', 'Dogma', 'Racefiets', 'False', '34.0', '2023-06-14', 2);
+-- Damesfietsen
+('Gazelle', 'Randstad Racer D’', 'Damesfiets', 'True', '18.0', '2023-04-14', 1),
+('Gazelle', 'Randstad Racer D’', 'Damesfiets', 'True', '18.0', '2023-04-14', 1),
+('Gazelle', 'Randstad Racer D’', 'Damesfiets', 'True', '18.0', '2023-04-14', 1),
+('Gazelle', 'Randstad Racer D’', 'Damesfiets', 'True', '18.0', '2023-04-14', 1),
+('Gazelle', 'Randstad Racer D’', 'Damesfiets', 'True', '18.0', '2023-04-14', 1),
+('Gazelle', 'Randstad Racer D’', 'Damesfiets', 'True', '18.0', '2023-04-14', 1),
 
+-- Bakfietsen
+('Urban Arrow', 'Grachten Caddy', 'Bakfiets', 'False', '25.0', '2024-02-15', 3),
+('Urban Arrow', 'Grachten Caddy', 'Bakfiets', 'False', '25.0', '2024-02-15', 3),
+('Urban Arrow', 'Grachten Caddy', 'Bakfiets', 'False', '25.0', '2024-02-15', 3),
+('Urban Arrow', 'Grachten Caddy', 'Bakfiets', 'False', '25.0', '2024-02-15', 3),
+('Urban Arrow', 'Grachten Caddy', 'Bakfiets', 'False', '25.0', '2024-02-15', 3),
+('Urban Arrow', 'Grachten Caddy', 'Bakfiets', 'False', '25.0', '2024-02-15', 3),
+
+-- Herenfietsen
+('Batavus', 'Urban Cruiser H', 'Herenfiets', 'False', '14.0', '2022-10-03', 2),
+('Batavus', 'Urban Cruiser H', 'Herenfiets', 'False', '14.0', '2022-10-03', 2),
+('Batavus', 'Urban Cruiser H', 'Herenfiets', 'False', '14.0', '2022-10-03', 2),
+('Batavus', 'Urban Cruiser H', 'Herenfiets', 'False', '14.0', '2022-10-03', 2),
+('Batavus', 'Urban Cruiser H', 'Herenfiets', 'False', '14.0', '2022-10-03', 2),
+('Batavus', 'Urban Cruiser H', 'Herenfiets', 'False', '14.0', '2022-10-03', 2),
+
+-- Tandems
+('Koga', 'Dynamic Duo', 'Tandem', 'False', '25.0', '2023-11-21', 1),
+('Koga', 'Dynamic Duo', 'Tandem', 'False', '25.0', '2023-11-21', 1),
+('Koga', 'Dynamic Duo', 'Tandem', 'False', '25.0', '2023-11-21', 1),
+('Koga', 'Dynamic Duo', 'Tandem', 'False', '25.0', '2023-11-21', 1),
+('Koga', 'Dynamic Duo', 'Tandem', 'False', '25.0', '2023-11-21', 1),
+('Koga', 'Dynamic Duo', 'Tandem', 'False', '25.0', '2023-11-21', 1);
 --
 -- Klant --
 --
@@ -121,19 +131,19 @@ INSERT INTO contract(datum, c_klantID) VALUES('2024-05-08', 2);
 SET @contract_id = LAST_INSERT_ID();
 
 -- Voeg vervolgens het contract toe met het juiste contract-ID
-INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '5', '2024-05-08', '2024-05-28');
+INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '1', '2024-05-08', '2024-05-28');
 
 INSERT INTO contract(datum, c_klantID) VALUES('2024-05-08', 3);
 SET @contract_id = LAST_INSERT_ID();
-INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '4', '2024-05-08', '2024-06-13');
+INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '2', '2024-05-08', '2024-06-13');
 
 INSERT INTO contract(datum, c_klantID) VALUES('2024-05-03', 4);
 SET @contract_id = LAST_INSERT_ID();
-INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '5', '2024-05-03', '2024-05-05');
+INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '3', '2024-05-03', '2024-05-05');
 
 INSERT INTO contract(datum, c_klantID) VALUES('2024-05-02', 5);
 SET @contract_id = LAST_INSERT_ID();
-INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '6', '2024-05-02', '2024-05-19');
+INSERT INTO Huur(Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES(@contract_id, '4', '2024-05-02', '2024-05-19');
 
 INSERT INTO contract(datum, c_klantID) VALUES('2024-05-13', 6);
 SET @contract_id = LAST_INSERT_ID();
