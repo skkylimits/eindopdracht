@@ -35,6 +35,11 @@ def toevoegen_contract(klantnummer, vestigingsid):
     mycursor.execute(klant_query)         
     mydb.commit()
 
+
+
+
+   
+
      #################################
     #           VESTIGING           #
     #################################
@@ -48,3 +53,91 @@ def toevoegen_contract(klantnummer, vestigingsid):
     # Adresgegevens
     print(f"{'':<{kolom_breedte}}{locatie_informatie[2]}")
     print(f"{'':<{kolom_breedte}}{locatie_informatie[3]}")
+
+
+
+
+
+
+      #############################
+    #           LOGO            #
+    #############################
+    print("                  ____  ")
+    print("                 /  __\\")
+    print("                (  @ @ )")
+    print("                 \\  O /")
+    print("                  \\__/ ")
+    print("                        ")
+
+    #################################
+    #           CONTRACT            #
+    #################################
+    
+    # Get date today
+    date_today =  datetime.today()
+    date_today_str = date_today.strftime('%d-%m-%Y')
+
+    print(f"Contractnr: {str(contractnummer):<{width_langste_woord}}", end="\t")
+    print(f"Datum: {str(date_today_str):<{width_langste_woord}}", end="\n")
+    
+
+    #############################
+    #           KLANT           #
+    #############################
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Klant: {str(voornaam):<{2}}, {str(tussenvoegsel)} {str(achternaam)} (klantnr {klantnummer})")
+    # Adresgegevens
+
+    # Lengte van de kolommen
+    kolom_breedte = 7
+
+    # Header
+    print(f"{'Adres:':<{kolom_breedte}}{straat} {huisnummer}")
+    print(f"{'':<{kolom_breedte}}{postcode} {plaats}")
+
+    #############################
+    #           DATUM           #
+    #############################
+
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Stardatum: {str(startdatum):<{width_langste_woord}}")
+    print(f"Inleverdatum: {str(inleverdatum):<{width_langste_woord}} --> aantal dagen: {aantal_verhuurde_dagen}", end="\n")
+    print("")
+
+    print(f'-----------------------------------------------------------------------------------', end="\n")
+
+    #############################
+    #           FIETSEN         #
+    #############################  
+    print("")
+    print("FIETSEN:")
+    print("") 
+
+    # Header
+    print(f"{'Fietsnr':<15} {'Type':<15} {'Model':<15} {'Elektrisch':<15} {'Prijs Per Dag':<15}")
+
+    for fiets in result:
+        print(f"{fiets[0]:<15} {fiets[0]:<15} {fiets[0]:<15} {fiets[0]:^15} {fiets[0]:>15}")
+
+    print("")
+    print(f'-----------------------------------------------------------------------------------', end="\n")
+    
+    #############################
+    #           Totaal          #
+    #############################
+    print("")
+    print("TOTAAL:")
+    print("")
+
+    # Header
+    print(f"{'Aantal dagen':>15} {'Prijs per dag':>15} {'Totaalbedrag':>15}")
+
+    # Gegevens voor elke dag
+    for _ in range(1, 2):
+        prijs_per_dag = aantal_fietsen * dagprijs
+        totaalbedrag = aantal_fietsen * (aantal_verhuurde_dagen * dagprijs)
+        print(f"{aantal_verhuurde_dagen:>15} {prijs_per_dag:>15} {totaalbedrag:>15}")
+
+
+
+  

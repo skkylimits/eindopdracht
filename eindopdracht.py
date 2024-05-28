@@ -311,10 +311,9 @@ def toevoegen_contract(klantnummer, vestigingsid):
     #  Meld dat een nieuwe klant succesvol is verwijderd
     print(f"\nNieuw contract succesvol toegevoegd aan de database!")
     
-def toon_contract(contractnummer):
+def toon_contract(klantnummer):
     width_langste_woord = 10  # De breedte van de breedste term, rekening houdend met "Vestiging:"
-    # contractnummer = contractnummer
-    klantnummer = contractnummer
+    klantnummer = klantnummer
 
     #############################################
     # Stel contract op met informatie uit de DB #
@@ -325,7 +324,7 @@ def toon_contract(contractnummer):
     ####################
 
     # Define the SQL query to select all data from the klant table in the mydb database
-    fetch_query = """
+    fetch_query = f"""
         SELECT 
             Contract.contractNummer,
             Contract.datum,
@@ -358,7 +357,7 @@ def toon_contract(contractnummer):
         LEFT JOIN 
             Fiets ON Huur.Fiets_Fietsnummer = Fiets.fietsnummer
         WHERE 
-            Klant.klantID = '3'
+            Klant.klantID = '{klantnummer}'
     """
 
     # Create a cursor object to execute SQL queries
@@ -586,8 +585,8 @@ def main():
             vestigingsid = input("Voer het vestigingsid in.. ")
             toevoegen_contract(nummer, vestigingsid)
         elif choice == "7":
-            contractnummer = int(input("Voer het contractnummer in dat moet worden getoond: "))
-            toon_contract(contractnummer)
+            klantnummer = int(input("Voer het klantnummer in dat moet worden getoond: "))
+            toon_contract(klantnummer)
         elif choice == "8":
             toon_alle_gegevens()
 
