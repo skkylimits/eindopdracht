@@ -62,7 +62,7 @@ berekening met de gegevens in de database.
 - [x] Maak een ERD in Lucidchart.
 - [x] Maak van het ERD een Relationeel Model in MySQL Workbench.
 - [x] Maak van het Relationeel Model een fysieke database met de optie Forward Engineering.
-- [ ] Vul de database met de gegevens uit het voorbeeldcontract.
+- [x] Vul de database met de gegevens uit het voorbeeldcontract.
 - [x] Schrijf een Python programma met daarin het gevraagde menu en functies.
 - [x] Met de functie zoeken_klant() kan op een deel van de achternaam worden gezocht.
 - [ ] De functie toon_alle_gegevens( ) toont de gegevens van alle klanten, fietsen en contracten
@@ -179,3 +179,7 @@ Specifieke opdracht voor Cyber Security
 
 
 TODO: update alleen als de waarde leeg is functie 2
+
+1 = vestiging
+2 = klant
+3 = bedrijf

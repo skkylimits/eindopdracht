@@ -157,23 +157,57 @@ def verwijderen_klant(klantnummer):
     #############################
     # Verwijder klant uit de db #
     #############################
+    
+    try:
+        # Maak een cursor object om SQL-query's uit te voeren
+        mycursor = mydb.cursor()
 
-    # Definieer de delete-query voor het verwijderen van de klant met het opgegeven klantnummer
-    delete_query_klant = "DELETE FROM Klant WHERE klantID = %s;"
+        # Stap 1: Haal het adres-ID op dat hoort bij de klant
+        mycursor.execute("SELECT k_adresID FROM Klant WHERE klantID = %s", (klantnummer,))
+        adres_id = mycursor.fetchone()
 
-    # Voer de query uit geef de waarde van klantnummer door als een tuple (klantnummer,) door de comma
-    mycursor.execute(delete_query_klant, (klantnummer,))
-    mydb.commit()
+        if adres_id:
+            adres_id = adres_id[0]
+            print(f"Adres-ID voor klant {klantnummer}: {adres_id}")
 
-    # Definieer de delete-query voor het verwijderen van het adres van de klant met het opgegeven klantnummer
-    delete_query_klant_adres = "DELETE FROM Adres WHERE adresID = %s;"
+            # Stap 2: Verwijder alle huurrecords gerelateerd aan de contracten van de klant
+            delete_query_huur = """
+                DELETE FROM Huur 
+                WHERE Contracten_ContractNummer IN (
+                    SELECT contractNummer FROM contract WHERE c_klantID = %s
+                )
+            """
+            mycursor.execute(delete_query_huur, (klantnummer,))
+            mydb.commit()
 
-    # Voer de query uit geef de waarde van klantnummer door als een tuple (klantnummer,) door de comma
-    mycursor.execute(delete_query_klant_adres, (klantnummer,))
-    mydb.commit()
+            # Stap 3: Verwijder alle contracten van de klant
+            delete_query_contract = "DELETE FROM contract WHERE c_klantID = %s"
+            mycursor.execute(delete_query_contract, (klantnummer,))
+            mydb.commit()
 
-    # Meld dat een nieuwe klant succesvol is verwijderd
-    print(f"\nKlant succesvol verwijderd!")
+            # Stap 4: Verwijder de klant
+            delete_query_klant = "DELETE FROM Klant WHERE klantID = %s"
+            mycursor.execute(delete_query_klant, (klantnummer,))
+            mydb.commit()
+
+            # Stap 5: Verwijder het adres
+            delete_query_adres = "DELETE FROM Adres WHERE adresID = %s"
+            mycursor.execute(delete_query_adres, (adres_id,))
+            mydb.commit()
+
+            # Bevestig de transactie na alle verwijderingen
+            mydb.commit()
+            print(f"Klant {klantnummer} en adres {adres_id} verwijderd")
+        else:
+            print(f"Geen adres gevonden voor klant {klantnummer}")
+
+    except mysql.connector.Error as err:
+        print(f"Fout: {err}")
+        mydb.rollback()
+    finally:
+        # Sluit de cursor en verbinding
+        mycursor.close()
+        mydb.close()
 
 def zoeken_klant():
     #############################
@@ -241,17 +275,17 @@ def toevoegen_fiets():
         mydb.commit()
 
         # Meld dat een nieuwe klant succesvol is verwijderd
-        print(f"Nieuwe fiets succesvol toegevoegd aan de database!")
+        print(f"\n Nieuwe fiets succesvol toegevoegd aan de database!")
     except Exception as e:
         # Als er een fout optreedt, maak dan geen wijzigingen in de database en toon een foutmelding
         print("Er is een fout opgetreden bij het toevoegen van de fiets:", e)
         mydb.rollback()
 
 def toevoegen_contract(klantnummer, vestigingsid):
-     # Vraag gebruiker input
+    # Vraag gebruiker input
     fietsnummer = input('Voer fietsnummer in? ')
-    # startdatum = input('Wat is de gewenste ingangsdatum? [yyyy-mm-dd] ')
-    # inleverdatum = input('Wat is de gewenste inleverdatum? [yyyy-mm-dd] ')
+    startdatum = input('Wat is de gewenste ingangsdatum? [yyyy-mm-dd] ')
+    inleverdatum = input('Wat is de gewenste inleverdatum? [yyyy-mm-dd] ')
 
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
@@ -268,7 +302,7 @@ def toevoegen_contract(klantnummer, vestigingsid):
     contract_id = mycursor.fetchone()[0]  
 
     # Voeg vervolgens het contract toe met het juiste huur-ID        
-    klant_query = f"INSERT INTO Huur (Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES ({contract_id}, {fietsnummer}, '2000-01-02', '2000-02-03')"       
+    klant_query = f"INSERT INTO Huur (Contracten_ContractNummer, Fiets_Fietsnummer, startdatum, inleverdatum) VALUES ({contract_id}, {fietsnummer}, '{startdatum}', '{inleverdatum})"       
     
     # Voer query uit
     mycursor.execute(klant_query)         
@@ -319,7 +353,7 @@ def toon_contract(contractnummer):
         LEFT JOIN 
             Fiets ON Huur.Fiets_Fietsnummer = Fiets.fietsnummer
         WHERE 
-            Klant.klantID = '2'
+            Klant.klantID = '3'
     """
 
     # Create a cursor object to execute SQL queries
