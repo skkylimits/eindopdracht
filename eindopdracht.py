@@ -158,8 +158,7 @@ def verwijderen_klant(klantnummer):
     # Verwijder klant uit de db #
     #############################
     
-    try:
-        # Maak een cursor object om SQL-query's uit te voeren
+    # Maak een cursor object om SQL-query's uit te voeren
         mycursor = mydb.cursor()
 
         # Stap 1: Haal het adres-ID op dat hoort bij de klant
@@ -198,16 +197,6 @@ def verwijderen_klant(klantnummer):
             # Bevestig de transactie na alle verwijderingen
             mydb.commit()
             print(f"Klant {klantnummer} en adres {adres_id} verwijderd")
-        else:
-            print(f"Geen adres gevonden voor klant {klantnummer}")
-
-    except mysql.connector.Error as err:
-        print(f"Fout: {err}")
-        mydb.rollback()
-    finally:
-        # Sluit de cursor en verbinding
-        mycursor.close()
-        mydb.close()
 
 def zoeken_klant():
     #############################
