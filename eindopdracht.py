@@ -320,6 +320,10 @@ def toon_contract(contractnummer):
     # Stel contract op met informatie uit de DB #
     #############################################
 
+    ####################
+    # Fetch contracten #
+    ####################
+
     # Define the SQL query to select all data from the klant table in the mydb database
     fetch_query = """
         SELECT 
@@ -348,7 +352,7 @@ def toon_contract(contractnummer):
         LEFT JOIN 
             klant ON Contract.c_klantID = klant.klantID
         LEFT JOIN 
-            Adres ON Adres.AdresID = klant.klantID
+            Adres ON Adres.AdresID = Klant.k_adresID
         LEFT JOIN 
             Huur ON Contract.contractNummer = Huur.Contracten_ContractNummer
         LEFT JOIN 
@@ -393,19 +397,41 @@ def toon_contract(contractnummer):
     totale_huurprijs = result[0][18]
     aantal_fietsen = result[0][19]
 
-    #################################
-    #           VESTIGING           #
-    #################################
-    print(f"{'':<{width_langste_woord}}")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
-    print(f"Vestiging: {locatie_informatie[1]:<{width_langste_woord}}", end="\t")
-    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    ###################
+    # Fetch vestiging #
+    ###################
+    
+    # Definieer de SQL-query om alle gegevens uit de vestigingstabel in de mydb-database te selecteren
+    fetch_vestiging_query = """
+        SELECT 
+            vestiging.vestegingsID,
+            vestiging.vestegingsnaam,
+            Adres.straat,
+            Adres.huisnummer,
+            Adres.postcode,
+            Adres.plaats
+        FROM 
+            Vestiging
+        LEFT JOIN 
+            Adres ON Adres.AdresID = vestiging.v_adresID -- Hier gebruik je k_adresID om het adres op te halen
+        WHERE 
+            vestiging.v_adresID = '3'
+    """
 
-    # Lengte van de kolommen
-    kolom_breedte = 11
+    # Maak een cursor object om SQL-query's uit te voeren
+    mycursor = mydb.cursor()
 
-    # Adresgegevens
-    print(f"{'':<{kolom_breedte}}{locatie_informatie[2]}")
-    print(f"{'':<{kolom_breedte}}{locatie_informatie[3]}")
+    # Voer de SQL-query uit
+    mycursor.execute(fetch_vestiging_query)
+
+    # Haal alle resultaten op uit de uitgevoerde query
+    vestiging = mycursor.fetchall()
+
+    vestigings_naam = vestiging[0][1]
+    vestigings_adres = vestiging[0][2]
+    vestigings_huisnummer = vestiging[0][3]
+    vestigings_postcode = vestiging[0][4]
+    vestigings_plaats = vestiging[0][5]
 
     #############################
     #           LOGO            #
@@ -416,6 +442,20 @@ def toon_contract(contractnummer):
     print("                 \\  O /")
     print("                  \\__/ ")
     print("                        ")
+
+    #################################
+    #           VESTIGING           #
+    #################################
+    print(f"{'':<{width_langste_woord}}")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+    print(f"Vestiging: {vestigings_naam:<{width_langste_woord}}", end="\t")
+    print(f"{'':<{width_langste_woord}}", end="\n")  # Ruimte voor de kolom "Contractnr:" en "Datum:"
+
+    # Lengte van de kolommen
+    kolom_breedte = 11
+
+    # Adresgegevens
+    print(f"{'':<{kolom_breedte}}{vestigings_adres} {vestigings_huisnummer}")
+    print(f"{'':<{kolom_breedte}}{vestigings_postcode} {vestigings_plaats}")
 
     #################################
     #           CONTRACT            #
