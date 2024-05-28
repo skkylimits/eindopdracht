@@ -1,11 +1,8 @@
 # Eindopdracht
 
-- [ ] Add cursor close where needed
-- [ ] fix functie 2 met db connection
-- [ ] cannot add or update a child row  a foreign key contraint --> INSERT query --> kan geen klanten, fietsen, contracten toevoegen
+
 - [ ] fix functie met database 7 contracten heeft niet alle benodige tabellen, toon contract update gehuurde fietsen in lijst & maak het zodat er uit de database datagehaald wordt
-- [ ] checklist
-- [ ] opgevraagde documenten
+  
 - [ ] test programma
 
 ## Inleiding
@@ -65,7 +62,7 @@ berekening met de gegevens in de database.
 - [x] Vul de database met de gegevens uit het voorbeeldcontract.
 - [x] Schrijf een Python programma met daarin het gevraagde menu en functies.
 - [x] Met de functie zoeken_klant() kan op een deel van de achternaam worden gezocht.
-- [ ] De functie toon_alle_gegevens( ) toont de gegevens van alle klanten, fietsen en contracten
+- [x] De functie toon_alle_gegevens( ) toont de gegevens van alle klanten, fietsen en contracten
       gesorteerd en overzichtelijk met behulp van string formatting. Voor ieder contract dient de
       totaalprijs te worden getoond. De klanten dienen gesorteerd te worden getoond op
       achternaam, de fietsen op aankoopdatum en de contracten op startdatum.
@@ -177,9 +174,7 @@ Specifieke opdracht voor Cyber Security
 - wat is elektrisch
 - wat is vestigingid
 
-
 TODO: update alleen als de waarde leeg is functie 2
-TODO: maak database veilig met env inlogcodes niet zichtbaar
 
 1 = vestiging
 2 = klant

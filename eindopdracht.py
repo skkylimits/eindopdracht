@@ -104,6 +104,9 @@ def toevoegen_klant():
     mycursor.execute(klant_query, klant_values)
     mydb.commit()
 
+    # Sluit de cursor en de verbinding
+    mycursor.close()
+
     # Meld dat een nieuwe klant succesvol is toegevoegd.
     print(f"\nNieuwe klant succesvol toegevoegd aan de database!")
 
@@ -206,10 +209,13 @@ def verwijderen_klant(klantnummer):
         # Stap 5: Verwijder het adres
         delete_query_adres = "DELETE FROM Adres WHERE adresID = %s"
         mycursor.execute(delete_query_adres, (adres_id,))
-        mydb.commit()
 
         # Bevestig de transactie na alle verwijderingen
         mydb.commit()
+
+        # Sluit de cursor en de verbinding
+        mycursor.close()
+
         print(f"Klant {klantnummer} en adres {adres_id} verwijderd")
 
 def zoeken_klant():
@@ -243,6 +249,7 @@ def zoeken_klant():
                 print("Voornaam:", klant_db[1])
                 print("Tussenvoegsel:", klant_db[2])
                 print("Achternaam:", klant_db[3])
+                print("\n")
         else:
             # Als er geen klanten gevonden zijn, druk dan een passend bericht af
             print(f"Geen klant gevonden met de naam {deel_achternaam}")
@@ -250,6 +257,9 @@ def zoeken_klant():
     except mysql.connector.Error as error:
         # Druk een foutmelding af als er een fout optreedt bij het verbinden met MySQL
         print("Fout bij het verbinden met MySQL:", error)
+    
+    # Sluit de cursor en de verbinding
+    mycursor.close()
             
 def toevoegen_fiets():
     merk = input("Voer merk in: ")
@@ -284,17 +294,24 @@ def toevoegen_fiets():
         print("Er is een fout opgetreden bij het toevoegen van de fiets:", e)
         mydb.rollback()
 
+    # Sluit de cursor en de verbinding
+    mycursor.close()
+
 def toevoegen_contract(klantnummer, vestigingsid):
     # Vraag gebruiker input
     fietsnummer = input('Voer fietsnummer in? ')
     startdatum = input('Wat is de gewenste ingangsdatum? [yyyy-mm-dd] ')
     inleverdatum = input('Wat is de gewenste inleverdatum? [yyyy-mm-dd] ')
 
+    # Get date today
+    date_today = datetime.today()
+    date_today_str = date_today.strftime('%Y-%m-%d')
+
     # Maak een cursor object om SQL-query's uit te voeren
     mycursor = mydb.cursor()
 
     # Voeg eerst de huur data toe aan de huurtabel        
-    huur_query = f"INSERT INTO Contract (datum, c_klantID) VALUES ('2024-05-17', {klantnummer})"  
+    huur_query = f"INSERT INTO Contract (datum, c_klantID) VALUES ('{date_today_str}', {klantnummer})"  
 
     # Voer de query uit
     mycursor.execute(huur_query)         
@@ -310,6 +327,9 @@ def toevoegen_contract(klantnummer, vestigingsid):
     # Voer query uit
     mycursor.execute(klant_query)         
     mydb.commit()
+
+    # Sluit de cursor en de verbinding
+    mycursor.close()
 
     #  Meld dat een nieuwe klant succesvol is verwijderd
     print(f"\nNieuw contract succesvol toegevoegd aan de database!")
@@ -534,7 +554,9 @@ def toon_contract(klantnummer):
         prijs_per_dag = sum(dagprijs_per_fiets)
         totaalbedrag = aantal_verhuurde_dagen * prijs_per_dag
         print(f"{aantal_verhuurde_dagen:>15} {prijs_per_dag:>15} {totaalbedrag:>15}")
-  
+    
+    # Sluit de cursor en de verbinding
+    mycursor.close()
 
 def toon_alle_gegevens():
     #####################################
@@ -670,6 +692,9 @@ def toon_alle_gegevens():
         print(db_klanten)
         
     print('\n')
+
+    # Sluit de cursor en de verbinding
+    mycursor.close()
    
 
 #############################
