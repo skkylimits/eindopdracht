@@ -649,6 +649,8 @@ def toon_alle_gegevens():
             Huur ON Contract.contractNummer = Huur.Contracten_ContractNummer
         LEFT JOIN 
             Fiets ON Huur.Fiets_Fietsnummer = Fiets.fietsnummer
+        ORDER BY
+            Huur.startdatum
         """
 
     # Maak een cursor object om SQL-query's uit te voeren
